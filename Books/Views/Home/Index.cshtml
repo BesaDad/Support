@@ -1,0 +1,79 @@
+﻿@using Books.Models
+@model List<BookViewModel>
+@{
+    ViewBag.Title = "Список книг";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts
+{
+    <script type="text/javascript">
+
+        $(function () {
+            $(".modal").on('hidden.bs.modal', function () {
+                //var kendoUpload = $("#files").data("kendoUpload");
+                //if (kendoUpload.getFiles()) {
+                //    kendoUpload.removeAllFiles();
+                //}
+                $(this).removeData('bs.modal');
+            });
+        });
+
+        function OnSuccessCreateEditBook(data) {
+            $('#createEditBookForm').closest('.modal').modal('hide');
+            $('#gridBooks').data('kendoGrid').dataSource.page(1);
+        }
+
+        function onFailureFormDefault(data) {
+            if ($("#createEditBookForm").find("#errorAlertFixed").length == 0) {
+                $("#createEditBookForm").prepend($("#errorAlertFixed").clone());
+            }
+            DisplayAlertErrors("createEditBookForm", JSON.parse(data.responseText).errors, $("#createEditBookForm").find("#errorAlertFixed"));
+        }
+
+        function onSuccessDeleteBook(data) {
+            $('#gridBooks').data('kendoGrid').dataSource.read();
+            $('#gridBooks').data('kendoGrid').refresh();
+        }
+
+        function onFailureDeleteBook(data) {
+            DisplayAlertErrors("createEditBookForm", JSON.parse(data.responseText).errors, $("#createEditBookForm"));
+        }
+    </script>
+}
+<div class="row">
+    @(Html.Kendo().Grid<BookViewModel>()
+                            .Name("gridBooks")
+                            .ToolBar(tb => tb.Custom().Url(@Url.Action("CreateEditBook", "Book"))
+                            .HtmlAttributes(new { @data_toggle = "modal", @data_target = "#dialogModalLg" }).Text("Добавить книгу"))
+                            .Columns(col =>
+                            {
+                                //col.Bound(p=>p.Id).ClientTemplate(
+                                //                      @"<div class='customer-photo'
+                                //                          style='background-image: url(" + Url.Content("~/App_Data/SkachatsLetitbit.jpg") + ");'></div><div class='customer-name'></div>")
+                                //                    .Width(240);
+                                col.Bound(c => c.Id).Title("Название").ClientTemplate("<a " +
+                                                                                        " data-toggle='modal' " +
+                                                                                        " data-target='\\#dialogModalLg' " +
+                                                                                        " href='" + Url.Action("CreateEditBook", "Book", new { id = "#=Id#" }) + "' " +
+                                                                                        ">#=Tittle#</a>");
+                                col.Bound(c => c.PageCount);
+                                col.Bound(c => c.PublishYear);
+                                col.Bound(c => c.Id).Width(60).Filterable(false).Sortable(false).Title("")
+                                            .ClientTemplate(
+                                                "<a data-ajax-method='POST' " +
+                                                "data-ajax-success='onSuccessDeleteBook' " +
+                                                "data-ajax-failure='onFailureDeleteBook'" +
+                                                "data-ajax='true' " +
+                                                "data-ajax-confirm='Вы уверены, что хотите удалить ?' " +
+                                                "class='k-font-icon glyphicon glyphicon-trash' href='" + Url.Action("DeleteBook", "Book", new { id = "#=Id#" }) + "'>&nbsp</a>"
+                                            );
+
+                            })
+                            .Scrollable(x => x.Height("450px"))
+                            .Sortable()
+                            .Pageable()
+                            .Pageable(p => p.Refresh(true).PageSizes(true))
+                            .Resizable(r => r.Columns(true))
+                            .DataSource(ds => ds.Ajax().Read(read => read.Action("BookListData", "Book")).PageSize(20))
+    )
+</div>
