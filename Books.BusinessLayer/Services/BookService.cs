@@ -26,14 +26,14 @@ namespace Books.BusinessLayer.Services
                 author.Value.BookId = book.Id;
             }
 
-            var lastBook = _unitOfWork.Books.All().OrderByDescending(it => it.Id).First();
-            book.Id = lastBook.Id + 1;
+            var lastBook = _unitOfWork.Books.All().OrderByDescending(it => it.Id).FirstOrDefault();
+            book.Id = (lastBook?.Id ?? 0) + 1;
             _unitOfWork.Books.Create(book);
         }
 
         public void Edit(Book book)
         {
-            var lastAuthorId = book.Authors.OrderByDescending(it => it.Id).FirstOrDefault().Id;
+            var lastAuthorId = book.Authors.OrderByDescending(it => it.Id).FirstOrDefault()?.Id ?? 0;
             foreach (var author in book.Authors.Where(it=>it.Id == 0))
             {
                 author.Id = ++lastAuthorId;

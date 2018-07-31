@@ -55,9 +55,13 @@
             @Html.HiddenFor(model => model.Id)
             @Html.HiddenFor(model => model.ImagePath)
             <div class="row">
-                <div class="col-md-5">
-                    <img src="~/App_Data/SkachatsLetitbit.jpg" />
-                </div>
+                @*@if (!String.IsNullOrEmpty(Model.ImagePath))
+                {
+                    <div class="col-md-5">
+                        <img src="@Url.Content("~/App_Data/" + Model.ImagePath)"/><br>
+                        <a class="k-button k-state-active" href="@Url.Action("ImageRemove", "Book", new { fileNames = Model.ImagePath })">Удалить картинку</a>
+                    </div>
+                }*@
                 <div class="col-md-10">
                     <div class="form-group">
                         @Html.LabelFor(model => model.Tittle, htmlAttributes: new { @class = "control-label col-md-3" })
@@ -100,7 +104,7 @@
                             @(Html.Kendo().Upload()
                                                             .Name("files")
                                                             .Async(a => a
-                                                                .Save("ImageSave", "Book", new { bookId = Model.Id })
+                                                                .Save("ImageSave", "Book", new { currFileName = Model.ImagePath })
                                                                 .Remove("ImageRemove", "Book")
                                                                 .AutoUpload(true)
                                                             )

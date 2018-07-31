@@ -222,9 +222,6 @@
     <Compile Include="Utility\ModelStateDictionaryExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App_Data\SkachatsLetitbit.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <Content Include="Client Scripts\mvcfoolproof.unobtrusive.js" />
     <Content Include="Client Scripts\mvcfoolproof.unobtrusive.min.js" />
     <Content Include="Client Scripts\MvcFoolproofJQueryValidation.js" />
@@ -300,7 +297,9 @@
     <Content Include="Views\Shared\EditorTemplates\Url.cshtml" />
     <Content Include="Views\Book\_CreateEditBook.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

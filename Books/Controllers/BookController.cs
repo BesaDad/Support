@@ -92,15 +92,14 @@ namespace Books.Controllers
             return PartialView("_CreateEditBook", model);
         }
 
-        public ActionResult ImageSave(IEnumerable<HttpPostedFileBase> files, int bookId)
+        public ActionResult ImageSave(IEnumerable<HttpPostedFileBase> files, string currFileName)
         {
             if (files != null)
             {
                 foreach (var file in files)
                 {
-                    var book = _unitOfWork.Books.Filter(it => it.Id == bookId).FirstOrDefault();
                     var fileName = Path.GetFileName(file.FileName);
-                    if (book.ImagePath != fileName || bookId == 0)
+                    if (currFileName != fileName)
                     {
                         var physicalPath = Path.Combine(Server.MapPath("~/App_Data"), fileName);
                         file.SaveAs(physicalPath);
