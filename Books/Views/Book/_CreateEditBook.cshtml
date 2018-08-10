@@ -1,7 +1,6 @@
 ﻿@model Books.Models.BookViewModel
 
 <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
-<script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
     $(function () {
             $("#@Html.IdFor(m => m.ISBN)").inputmask("999-9-99-999999-9", { clearIncomplete: true });
@@ -11,8 +10,6 @@
 
             $("#@Html.IdFor(m => m.PageCount)").inputmask('integer',
             { min: '1', max: '10000', allowPlus: false, allowMinus: false, unmaskAsNumber: true });
-
-        $('#authors').dataTable();
     });
 
     $('#btnImageUpload').on('click',
@@ -54,10 +51,6 @@
         });
     });
 
-    function index(dataItem, grid) {
-        var data = $('#' + grid).data("kendoGrid").dataSource.data();
-        return data.indexOf(dataItem);
-    }
 </script>
 
 <div class="modal-body">
@@ -81,8 +74,6 @@
                         new AjaxOptions { OnSuccess = "OnSuccessCreateEditBook", OnFailure = "onFailureFormDefault", HttpMethod = "POST" },
                         new { enctype = "multipart/form-data", id = "createEditBookForm", autocomplete = "off", @class = "form-horizontal" }))
         {
-
-            @Html.ValidationSummary(true)
             @Html.AntiForgeryToken()
             @Html.HiddenFor(model => model.Id)
             @Html.HiddenFor(model => model.ImagePath)

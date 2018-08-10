@@ -264,6 +264,10 @@
     <Content Include="Views\Shared\EditorTemplates\Time.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Url.cshtml" />
     <Content Include="Views\Book\_CreateEditBook.cshtml" />
+    <Content Include="Views\Book\_BookList.cshtml" />
+    <Content Include="Views\Book\_UploadImage.cshtml" />
+    <Content Include="Views\Home\About.cshtml" />
+    <Content Include="Views\Home\Contact.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

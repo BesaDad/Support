@@ -31,8 +31,8 @@
         });
 
         function OnSuccessCreateEditBook(data) {
-            $('#createEditBookForm').closest('.modal').modal('hide');
-            $('#createEditBookForm').submit();
+            $('#bookListForm').closest('.modal').modal('hide');
+            //$('#bookListForm').submit();
         }
 
         function onFailureFormDefault(data) {
@@ -43,18 +43,18 @@
         }
 
         function onSuccessDeleteBook(data) {
-            $('#createEditBookForm').submit();
+            //$('#bookListForm').submit();
         }
 
         function onFailureDeleteBook(data) {
-            DisplayAlertErrors("createEditBookForm", JSON.parse(data.responseText).errors, $("#createEditBookForm"));
+            DisplayAlertErrors("createEditBookForm", JSON.parse(data.responseText).errors, $("#bookListForm"));
         }
     </script>
 }
 
 <div class="row">
     <div class="col-md-6">
-        @using (Ajax.BeginForm("BookListData", "Book", null, new AjaxOptions { UpdateTargetId = "gridBooks" }, new { id = "createEditBookForm" }))
+        @using (Ajax.BeginForm("BookListData", "Book", null, new AjaxOptions { UpdateTargetId = "gridBooks" }, new { id = "bookListForm" }))
         {
             <div id="gridBooks">
                 @Html.Partial("/Views/Book/_BookList.cshtml", Model)
