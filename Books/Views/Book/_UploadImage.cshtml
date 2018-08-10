@@ -1,0 +1,7 @@
+﻿@using (Html.BeginForm("ImageSave", "Book", FormMethod.Post, 
+    new { enctype = "multipart/form-data" }))
+{  
+    <label for="file">Выберите изображение:</label> 
+    <input type="file" name="file" id="file" style="width: 100%;" /> 
+    <input type="submit" value="Загрузить" class="submit" /> 
+}

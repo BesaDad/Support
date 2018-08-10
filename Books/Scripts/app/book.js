@@ -1,7 +1,8 @@
-﻿function showAlertMessage(alertId, message) {
+﻿function showAlertMessage(alert, message) {
     if (message) {
-        $("#" + alertId + " span").replaceWith("<span>" + message + "</span>");
-        $("#" + alertId).show().delay(3000).hide(1000);
+        var $alertError = alert;
+        $alertError.find("span").replaceWith("<span>" + message + "</span>");
+        $alertError.show().delay(3000).hide(1000);
     }
 }
 

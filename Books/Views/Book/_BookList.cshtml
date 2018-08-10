@@ -1,0 +1,50 @@
+﻿@model List<Books.Models.BookViewModel>
+
+@*<script type="text/javascript">
+    $(document).ready(function () {
+        $('#child_Value_SexId').prop("disabled", true);
+
+        $("#childInfoCreateEditForm  #PerinatalRiskGestWeek").inputmask('integer',
+            { min: '1', max: '99', allowPlus: false, allowMinus: false, unmaskAsNumber: true }
+        );
+        $("#childInfoCreateEditForm  #PerinatalRiskGestDays").inputmask('integer',
+           { min: '1', max: '99', allowPlus: false, allowMinus: false, unmaskAsNumber: true }
+       );
+        $("#childInfoCreateEditForm  #MotherHeight").inputmask('integer',
+            { min: '1', max: '250', allowPlus: false, allowMinus: false, unmaskAsNumber: true }
+        );
+    });
+
+
+    function onFailureDeleteBook(data) {
+        DisplayAlertErrors("createEditBookForm", JSON.parse(data.responseText).errors, $("#createEditBookForm"));
+    }
+</script>*@
+
+<div>
+    <a type="button" class="btn btn-primary"data-toggle="modal" data-target="#dialogModalLg" href="@Url.Action("CreateEditBook", "Book")">
+        <span class="glyphicon glyphicon-plus"></span>Добавить
+    </a>
+</div>
+<table class="table table-bordered margin-b0">
+    <thead>
+    <th>Заголовок</th>
+    <th>Год публикации</th>
+    <th>Количество страниц</th>
+    <th></th>
+    </thead>
+    <tbody id="departmentData">
+        @foreach (var ur in Model)
+        {
+            <tr id="@ur.Id">
+                <td><a data-toggle="modal" data-target="#dialogModalLg" href="@Url.Action("CreateEditBook", "Book", new {id = ur.Id})">@(ur.Tittle)</a></td>
+                <td>@ur.PublishYear</td>
+                <td @ur.PageCount></td>
+                <td class="text-center">
+                    @Ajax.ActionLink(" ", "DeleteBook", "Book", new {id = ur.Id}, new AjaxOptions {HttpMethod = "POST", Confirm = "Вы уверены что хотите удалить книгу?", OnSuccess = "onSuccessDeleteBook", OnFailure = "onFailureDeleteBook" },
+                        new {@class = "glyphicon glyphicon-trash"})
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

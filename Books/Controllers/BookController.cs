@@ -3,8 +3,6 @@ using Books.Domain.Models;
 using Books.Infrastructure.Business;
 using Books.Infrastructure.Domain;
 using Books.Models;
-using Kendo.Mvc.Extensions;
-using Kendo.Mvc.UI;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,6 +12,8 @@ using Books.Utility;
 using System.Web;
 using System.Web.Mvc;
 using System.Net;
+using System.Web.Helpers;
+using System.Web.Management;
 
 namespace Books.Controllers
 {
@@ -28,57 +28,12 @@ namespace Books.Controllers
             _bookService = bookService;
         }
 
-        public async Task<JsonResult> BookListData([DataSourceRequest] DataSourceRequest request)
+        public ActionResult BookListData()
         {
-            if (!_unitOfWork.Books.All().Any())
-            {
-                var initialBooks = new List<Book> {
-                    new Book
-                    {
-                        Id = 1,
-                        Tittle = "Робинзон Крузо",
-                        PageCount = 300,
-                        PublishName = "Лунный свет",
-                        PublishYear = 2011,
-                        Authors = new List<Author>
-                        {
-                            new Author {
-                                Id = 1,
-                                BookId = 1,
-                                LastName = "Стивенсон",
-                                FirstName = "Роберт"
-                            }
-                        }
-                    },
-                    new Book
-                    {
-                        Id = 2,
-                        Tittle = "Братья Карамазовы",
-                        PageCount = 500,
-                        PublishName = "Старая Россия",
-                        PublishYear = 2003,
-                        Authors = new List<Author>
-                        {
-                            new Author {
-                                Id = 2,
-                                BookId = 2,
-                                LastName = "Федор",
-                                FirstName = "Достоевский"
-                            }
-                        }
-                    }
-                };
-
-                foreach (var b in initialBooks)
-                {
-                    _unitOfWork.Books.Create(b);
-                }
-            }
-
             var list = _unitOfWork.Books.All();
-            var result = await Mapper.Map<List<BookViewModel>>(list).ToDataSourceResultAsync(request);
+            var model = Mapper.Map<List<BookViewModel>>(list);
 
-            return Json(result, JsonRequestBehavior.AllowGet);
+            return PartialView("_BookList", model);
         }
 
         [HttpGet]
@@ -92,21 +47,41 @@ namespace Books.Controllers
             return PartialView("_CreateEditBook", model);
         }
 
-        public ActionResult ImageSave(IEnumerable<HttpPostedFileBase> files, string currFileName)
+        [HttpPost]
+        public JsonResult ImageSave(HttpPostedFileBase image)
         {
-            if (files != null)
+            try
             {
-                foreach (var file in files)
+                if (image != null)
                 {
-                    var fileName = Path.GetFileName(file.FileName);
-                    if (currFileName != fileName)
+                    var fileName = Path.GetFileName(image.FileName);
+                    var physicalPath = Path.Combine(Server.MapPath("~/App_Data"), fileName);
+                    string tempfileName = "";
+
+                    if (System.IO.File.Exists(physicalPath))
                     {
-                        var physicalPath = Path.Combine(Server.MapPath("~/App_Data"), fileName);
-                        file.SaveAs(physicalPath);
+                        int counter = 2;
+                        while (System.IO.File.Exists(physicalPath))
+                        {
+                            tempfileName = $"{Path.GetFileNameWithoutExtension(image.FileName)}_{counter}{Path.GetExtension(image.FileName)}";
+                            physicalPath = Path.Combine(Server.MapPath("~/App_Data"), tempfileName);
+                            counter++;
+                        }
+
+                        fileName = tempfileName;
                     }
+                    
+                    image.SaveAs(physicalPath);
+                    return Json(new {success = true, name = fileName, message = "Изображение загружено"}, JsonRequestBehavior.AllowGet);
                 }
+
+                return Json(new { success = false, message = "Выберите изборажение" }, JsonRequestBehavior.AllowGet);
             }
-            return Content("");
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Изображение не загружено" }, JsonRequestBehavior.AllowGet);
+            }
+
         }
 
         public ActionResult ImageRemove(string[] fileNames)

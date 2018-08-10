@@ -1,5 +1,7 @@
 ﻿@model Books.Models.BookViewModel
 
+<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+<script src="~/Scripts/DataTables/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
     $(function () {
             $("#@Html.IdFor(m => m.ISBN)").inputmask("999-9-99-999999-9", { clearIncomplete: true });
@@ -8,33 +10,49 @@
                 { min: '1800', max: '@DateTime.Now.Year', allowPlus: false, allowMinus: false, unmaskAsNumber: true });
 
             $("#@Html.IdFor(m => m.PageCount)").inputmask('integer',
-                { min: '1', max: '10000', allowPlus: false, allowMinus: false, unmaskAsNumber: true });
+            { min: '1', max: '10000', allowPlus: false, allowMinus: false, unmaskAsNumber: true });
 
+        $('#authors').dataTable();
     });
 
-    function onSuccessDeleteBook(data) {
-        if (data.success) {
-            $('#gridBooks').data('kendoGrid').dataSource.read();
-            $('#gridBooks').data('kendoGrid').refresh();
-        } else {
-            showAlertMessage("errorAlert", data.errors);
-        }
-    }
+    $('#btnImageUpload').on('click',
+        function() {
+            console.log($('#uploadImageForm'));
+            $('#uploadImageForm').submit();
+        });
 
-    function onSuccess(e) {
-        if (e.operation == "upload") {
-            for (var i = 0; i < e.files.length; i++) {
-                var file = e.files[i].rawFile;
+    $('#uploadImage').submit(function(event) {
+        event.preventDefault();
+        var formdata = new FormData($(this).get(0));
 
-                if (file) {
-                    var reader = new FileReader();
+        $.ajax({
+            url: this.action,
+            type: this.method,
+            data: formdata,
+            processData: false,
+            contentType: false,
+            success: function(result) {
+                if (result.success) {
+                    $("#@Html.IdFor(m => m.ImagePath)").val(result.name);
+                    if ($('.modal-body #successAlert').length == 0)
+                        $('.modal-body').prepend($('#successAlert').clone());
 
-                    reader.readAsDataURL(file);
-                            $("#@Html.IdFor(m=>m.ImagePath)").val(e.files[0].name);
+                    showAlertMessage($('.modal-body #successAlert'), result.message);
+                }
+                else {
+                    if ($('.modal-body #errorAlert').length == 0)
+                        $('.modal-body').prepend($('#errorAlert').clone());
+
+                    showAlertMessage($('.modal-body #errorAlert'), result.message);
                 }
             }
-        }
-    }
+            //,
+            //complete: function() {
+            //    $.validator.unobtrusive.parse('form');
+            //    // And so on.
+            //}
+        });
+    });
 
     function index(dataItem, grid) {
         var data = $('#' + grid).data("kendoGrid").dataSource.data();
@@ -42,108 +60,123 @@
     }
 </script>
 
+<div class="modal-body">
+    <div class="well">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <form action="@Url.Action("ImageSave", "Book")" id="uploadImage" class="form-horizontal" enctype="multipart/form-data" method="post">
+            <div class="row">
+                <div class="col-md-10">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Image, new { @class = "control-label col-md-3" })
+                        <div class="col-md-6">
+                            @Html.TextBoxFor(m => m.Image, new { type = "file", @class = "form-control", accept = "image/jpeg,image/png,image/jpg" })
+                            @Html.ValidationMessageFor(m => m.Image, "", new { @class = "text-danger" })
+                        </div>
+                        <input type="submit" id="imageUpload" class="btn btn-primary" value="Загрузить">
+                    </div>
+                </div>
+            </div>
+        </form>
+        @using (Ajax.BeginForm("CreateEditBook", "Book", new { area = "" },
+                        new AjaxOptions { OnSuccess = "OnSuccessCreateEditBook", OnFailure = "onFailureFormDefault", HttpMethod = "POST" },
+                        new { enctype = "multipart/form-data", id = "createEditBookForm", autocomplete = "off", @class = "form-horizontal" }))
+        {
 
-@using (Ajax.BeginForm("CreateEditBook", "Book", new { area = "" },
-                new AjaxOptions { OnSuccess = "OnSuccessCreateEditBook", OnFailure = "onFailureFormDefault", HttpMethod = "POST" },
-                new { id = "createEditBookForm", autocomplete = "off", @class = "form-horizontal" }))
-{
-    <div class="modal-body">
-        <div class="well  k-info-colored">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             @Html.ValidationSummary(true)
             @Html.AntiForgeryToken()
             @Html.HiddenFor(model => model.Id)
             @Html.HiddenFor(model => model.ImagePath)
             <div class="row">
-                @*@if (!String.IsNullOrEmpty(Model.ImagePath))
-                {
-                    <div class="col-md-5">
-                        <img src="@Url.Content("~/App_Data/" + Model.ImagePath)"/><br>
-                        <a class="k-button k-state-active" href="@Url.Action("ImageRemove", "Book", new { fileNames = Model.ImagePath })">Удалить картинку</a>
-                    </div>
-                }*@
+                @*<div class="col-md-5">
+                        <img src="~/App_Data/SkachatsLetitbit.jpg" />
+                    </div>*@
                 <div class="col-md-10">
                     <div class="form-group">
-                        @Html.LabelFor(model => model.Tittle, htmlAttributes: new { @class = "control-label col-md-3" })
+                        @Html.LabelFor(model => model.Tittle, new { @class = "control-label col-md-3" })
                         <div class="col-md-7">
                             @Html.TextBoxFor(model => model.Tittle, new { @class = "form-control recize-none", @maxlength = "30", @placeholder = "Не более 30 символов" })
                             @Html.ValidationMessageFor(model => model.Tittle, "", new { @class = "text-danger" })
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(model => model.PageCount, htmlAttributes: new { @class = "control-label col-md-3" })
+                        @Html.LabelFor(model => model.PageCount, new { @class = "control-label col-md-3" })
                         <div class="col-md-2">
                             @Html.TextBoxFor(model => model.PageCount, new { @class = "form-control", @maxlength = "5" })
                             @Html.ValidationMessageFor(model => model.PageCount, "", new { @class = "text-danger" })
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(model => model.PublishName, htmlAttributes: new { @class = "control-label col-md-3" })
+                        @Html.LabelFor(model => model.PublishName, new { @class = "control-label col-md-3" })
                         <div class="col-md-7">
                             @Html.TextBoxFor(model => model.PublishName, new { @class = "form-control", @maxlength = "30", @placeholder = "Не более 30 символов" })
                             @Html.ValidationMessageFor(model => model.PublishName, "", new { @class = "text-danger" })
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(model => model.PublishYear, htmlAttributes: new { @class = "control-label col-md-3" })
+                        @Html.LabelFor(model => model.PublishYear, new { @class = "control-label col-md-3" })
                         <div class="col-md-2">
                             @Html.TextBoxFor(model => model.PublishYear, new { @class = "form-control", @name = "IcnCorrection", @maxlength = "4", @placeholder = "ГГГГ" })
                             @Html.ValidationMessageFor(model => model.PublishYear, "", new { @class = "text-danger" })
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(model => model.ISBN, htmlAttributes: new { @class = "control-label col-md-3" })
+                        @Html.LabelFor(model => model.ISBN, new { @class = "control-label col-md-3" })
                         <div class="col-md-4">
                             @Html.TextBoxFor(model => model.ISBN, new { @class = "form-control" })
                             @Html.ValidationMessageFor(model => model.ISBN, "", new { @class = "text-danger" })
                         </div>
                     </div>
+
                     <div class="form-group">
-                        @Html.LabelFor(model => model.ImagePath, htmlAttributes: new { @class = "control-label col-md-3" })
+                        @Html.LabelFor(model => model.Authors, new { @class = "control-label col-md-3" })
                         <div class="col-md-6">
-                            @(Html.Kendo().Upload()
-                                                            .Name("files")
-                                                            .Async(a => a
-                                                                .Save("ImageSave", "Book", new { currFileName = Model.ImagePath })
-                                                                .Remove("ImageRemove", "Book")
-                                                                .AutoUpload(true)
-                                                            )
-                                                            .Events(e => e.Success("onSuccess"))
-                                                            .ShowFileList(true)
-                                                            .Multiple(false)
-                                                            .DropZone(".dropZoneElement")
-                                                            .Validation(validation =>
-                                                            {
-                                                                validation.AllowedExtensions(new string[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif" });
-                                                                validation.MinFileSize(500);
-                                                            })
-                            )
+                            <table id="authors" class="table table-bordered margin-b0">
+                                <thead>
+                                <th>Фамилия</th>
+                                <th>Имя</th>
+                                <th></th>
+                                </thead>
+                                <tbody id="departmentData">
+                                    @foreach (var ur in Model.Authors.Select((value, i) => new { i, value }))
+                                    {
+                                        <tr id="@ur.value.Id">
+                                            <td>@ur.value.LastName</td>
+                                            <td>@ur.value.FirstName</td>
+                                            <td class="text-center">
+                                                <a class="glyphicon glyphicon-trash" href="#"></a>
+                                            </td>
+                                            @Html.HiddenFor(model => ur.value.Id)
+                                            @Html.HiddenFor(model => ur.value.BookId)
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.Authors, htmlAttributes: new { @class = "control-label col-md-3" })
-                        <div class="col-md-6">
-                            @(Html.Kendo().Grid(Model.Authors).Name("Authors")
-                                                                            .ToolBar(tools => tools.Create().Text("Добавить"))
-                                                                            .Editable(editable => editable.Mode(GridEditMode.InCell))
-                                                                            .HtmlAttributes(new { @class = "margin-lb15" })
-                                                                            .Columns(columns =>
-                                                                            {
-                                                                                columns.Bound(p => p.FirstName)
-                                                                                                    .ClientTemplate("#= FirstName # <input type='hidden' name='Authors[#= index(data, 'Authors')#].FirstName' value='#= FirstName #' />")
-                                                                                                    .HeaderHtmlAttributes(new { @class = "tooltip-el" });
+                    @*<div class="form-group">
+                            @Html.LabelFor(model => model.Authors, htmlAttributes: new { @class = "control-label col-md-3" })
+                            <div class="col-md-6">
+                                @(Html.Kendo().Grid(Model.Authors).Name("Authors")
+                                                                                        .ToolBar(tools => tools.Create().Text("Добавить"))
+                                                                                        .Editable(editable => editable.Mode(GridEditMode.InCell))
+                                                                                        .HtmlAttributes(new { @class = "margin-lb15" })
+                                                                                        .Columns(columns =>
+                                                                                        {
+                                                                                            columns.Bound(p => p.FirstName)
+                                                                                                                .ClientTemplate("#= FirstName # <input type='hidden' name='Authors[#= index(data, 'Authors')#].FirstName' value='#= FirstName #' />")
+                                                                                                                .HeaderHtmlAttributes(new { @class = "tooltip-el" });
 
-                                                                                columns.Bound(p => p.LastName)
-                                                                                                    .ClientTemplate("#= LastName # <input type='hidden' name='Authors[#= index(data, 'Authors')#].LastName' value='#= LastName #' />")
-                                                                                                    .HeaderHtmlAttributes(new { @class = "tooltip-el" });
+                                                                                            columns.Bound(p => p.LastName)
+                                                                                                                .ClientTemplate("#= LastName # <input type='hidden' name='Authors[#= index(data, 'Authors')#].LastName' value='#= LastName #' />")
+                                                                                                                .HeaderHtmlAttributes(new { @class = "tooltip-el" });
 
-                                                                                columns.Bound(p => p.Id).Hidden(true).IncludeInMenu(true)
-                                                                                            .ClientTemplate("#= Id # <input type='hidden' name='Authors[#= index(data, 'Authors')#].Id' value='#= Id #' />");
+                                                                                            columns.Bound(p => p.Id).Hidden(true).IncludeInMenu(true)
+                                                                                                        .ClientTemplate("#= Id # <input type='hidden' name='Authors[#= index(data, 'Authors')#].Id' value='#= Id #' />");
 
-                                                                                columns.Bound(p => p.BookId).Hidden(true).IncludeInMenu(true)
-                                                                                            .ClientTemplate("#= BookId # <input type='hidden' name='Authors[#= index(data, 'Authors')#].BookId' value='#= BookId #' />");
-                                                                                columns.Template(@<text></text>).Width(60).ClientTemplate(@"<a class=""k-font-icon k-grid-delete glyphicon glyphicon-trash"" href=""\#""></a>");
-                                                                        })
+                                                                                            columns.Bound(p => p.BookId).Hidden(true).IncludeInMenu(true)
+                                                                                                        .ClientTemplate("#= BookId # <input type='hidden' name='Authors[#= index(data, 'Authors')#].BookId' value='#= BookId #' />");
+                                                                                            columns.Template(@<text></text>).Width(60).ClientTemplate(@"<a class=""k-font-icon k-grid-delete glyphicon glyphicon-trash"" href=""\#""></a>");
+                                                                            })
                                                                 .Scrollable(a => a.Height("100px"))
                                                                 .DataSource(dataSource => dataSource.Ajax().Batch(true)
                                                                 .Model(model =>
@@ -153,14 +186,14 @@
                                                                     model.Field(p => p.LastName);
                                                                 })
                                                                 .ServerOperation(false)))
-                        </div>
-                    </div>
+                            </div>
+                        </div>*@
                 </div>
             </div>
             <div class="buttons-wrap">
-                <button type="submit" class="k-button k-state-active">Сохранить</button>
-                <button id="btnCancel" type="button" class="k-button k-state-default" data-dismiss="modal">Отменить</button>
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <button id="btnCancel" type="button" class="btn" data-dismiss="modal">Отменить</button>
             </div>
-        </div>
+        }
     </div>
-}
+</div>

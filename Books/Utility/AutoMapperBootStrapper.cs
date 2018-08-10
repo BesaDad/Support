@@ -19,7 +19,8 @@ namespace Books.Web.Utility
 
         public static void BootStrap()
         {
-            Mapper.CreateMap<Book, BookViewModel>();
+            Mapper.CreateMap<Book, BookViewModel>()
+                .ForMember(x => x.Image, opt => opt.Ignore()); 
         }
     }
 }

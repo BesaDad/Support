@@ -10,15 +10,6 @@
     <!--This bundle was moved by the Telerik VS Extensions for compatibility reasons-->
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/jqueryval")
-    
-    <link href="https://kendo.cdn.telerik.com/2018.2.620/styles/kendo.common.min.css" rel="stylesheet" type="text/css" />
-    <link href="https://kendo.cdn.telerik.com/2018.2.620/styles/kendo.mobile.all.min.css" rel="stylesheet" type="text/css" />
-    <link href="https://kendo.cdn.telerik.com/2018.2.620/styles/kendo.flat.min.css" rel="stylesheet" type="text/css" />
-    <script src="https://kendo.cdn.telerik.com/2018.2.620/js/jquery.min.js"></script>
-    <script src="https://kendo.cdn.telerik.com/2018.2.620/js/jszip.min.js"></script>
-    <script src="https://kendo.cdn.telerik.com/2018.2.620/js/kendo.all.min.js"></script>
-    <script src="https://kendo.cdn.telerik.com/2018.2.620/js/kendo.aspnetmvc.min.js"></script>
-    <script src="@Url.Content("~/Scripts/kendo.modernizr.custom.js")"></script>
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -30,6 +21,11 @@
                     <span class="icon-bar"></span>
                 </button>
                 @Html.ActionLink("Библиотека", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Домашняя страница", "Index", "Home")</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -64,7 +60,6 @@
     @Scripts.Render("~/bundles/inputmask")
     @Scripts.Render("~/bundles/bookJs")
     <script type="text/javascript">
-        kendo.culture("ru-RU");
     </script>
 
     @Scripts.Render("~/bundles/bootstrap")

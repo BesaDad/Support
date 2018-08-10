@@ -1,10 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Web;
-using System.Configuration;
-using Foolproof;
+
 
 namespace Books.Models
 {
@@ -37,8 +36,11 @@ namespace Books.Models
         [Display(Name = "Номер ISBN")]
         public string ISBN { get; set; }
 
-        [Display(Name = "Изображение")]
         public string ImagePath { get; set; }
+
+        [Display(Name = "Изображение")]
+        [FileExtensions(Extensions = "png,jpeg,jpg", ErrorMessage = "Файл не является изображением")]
+        public HttpPostedFileBase Image { get; set; }
 
         [Display(Name = "Авторы")]
         public virtual List<AuthorViewModel> Authors { get; set; }
