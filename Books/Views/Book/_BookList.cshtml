@@ -1,4 +1,5 @@
-﻿@model List<Books.Models.BookViewModel>
+﻿@using Books.Models
+@model List<Books.Models.BookViewModel>
 
 <div>
     <a type="button" class="btn btn-primary"data-toggle="modal" data-target="#dialogModalLg" href="@Url.Action("CreateEditBook", "Book")">
@@ -7,8 +8,8 @@
 </div>
 <table class="table table-bordered margin-b0">
     <thead>
-    <th>Заголовок</th>
-    <th>Год публикации</th>
+    <th><a onclick="orderBooks('Tittle')" href="#">Заголовок</a></th>
+    <th><a onclick="orderBooks('PublishYear')" href="#">Год публикации</a></th>
     <th>Количество страниц</th>
     <th></th>
     </thead>
@@ -18,7 +19,7 @@
             <tr id="@ur.Id">
                 <td><a data-toggle="modal" data-target="#dialogModalLg" href="@Url.Action("CreateEditBook", "Book", new {id = ur.Id})">@(ur.Tittle)</a></td>
                 <td>@ur.PublishYear</td>
-                <td @ur.PageCount></td>
+                <td>@ur.PageCount</td>
                 <td class="text-center">
                     @Ajax.ActionLink(" ", "DeleteBook", "Book", new {id = ur.Id}, new AjaxOptions {HttpMethod = "POST", Confirm = "Вы уверены что хотите удалить книгу?", OnSuccess = "onSuccessDeleteBook", OnFailure = "onFailureDeleteBook" },
                         new {@class = "glyphicon glyphicon-trash"})

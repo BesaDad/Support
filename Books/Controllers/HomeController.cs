@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Books.Utility;
 
 namespace Books.Controllers
 {
@@ -66,8 +67,14 @@ namespace Books.Controllers
             }
 
             var list = _unitOfWork.Books.All();
-            var model = Mapper.Map<List<BookViewModel>>(list);
 
+            var model = new BooksSearchViewModel
+            {
+                OrderProp =  TempData["OrderProp"]?.ToString(),
+                OrderType =  TempData["OrderType"]?.ToString()
+            };
+
+            model.Books = Mapper.Map<List<BookViewModel>>(list.GetSortetList(model.OrderProp, model.OrderType));
             return View(model);
         }
 

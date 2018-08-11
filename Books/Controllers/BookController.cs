@@ -28,10 +28,14 @@ namespace Books.Controllers
             _bookService = bookService;
         }
 
-        public ActionResult BookListData()
+        public ActionResult BookListData(string orderProp, string orderType)
         {
+            TempData["OrderProp"] = orderProp;
+            TempData["OrderType"] = orderType;
+
             var list = _unitOfWork.Books.All();
-            var model = Mapper.Map<List<BookViewModel>>(list);
+
+            var model = Mapper.Map<List<BookViewModel>>(list.GetSortetList(orderProp, orderType));
 
             return PartialView("_BookList", model);
         }
