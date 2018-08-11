@@ -144,6 +144,16 @@ namespace Books.Controllers
 
         }
 
+        public ActionResult GetAuthorRow(int id, int bookId, int authCount)
+        {
+            var book = new BookViewModel();
+            for(int i = 0; i <= authCount; i ++)
+            {
+                book.Authors.Add(new AuthorViewModel {Id = id + 1, BookId = bookId});
+            };
+            return PartialView("_AuthorRow", book);
+        }
+
         public JsonResult DeleteBook(int id)
         {
             try

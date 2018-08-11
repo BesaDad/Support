@@ -1,0 +1,25 @@
+﻿@model Books.Models.BookViewModel
+
+    @foreach (var ur in Model.Authors.Select((value, i) => new { i, value }))
+    {
+        if (ur.i == Model.Authors.Count - 1)
+        {
+            <tr id="@Model.Authors[ur.i].Id">
+                <td>
+                    @Html.TextBoxFor(model => model.Authors[ur.i].LastName)
+                    @Html.ValidationMessageFor(model => model.Authors[ur.i].LastName, "", new {@class = "text-danger"})
+
+                </td>
+                <td>
+                    @Html.TextBoxFor(model => model.Authors[ur.i].FirstName)
+                    @Html.ValidationMessageFor(model => model.Authors[ur.i].FirstName, "", new {@class = "text-danger"})
+
+                </td>
+                <td class="text-center">
+                    <a class="glyphicon glyphicon-trash" onclick="deleteAuthor(@Model.Authors[ur.i].Id)" href="#"></a>
+                </td>
+                @Html.HiddenFor(model => model.Authors[ur.i].Id)
+                @Html.HiddenFor(model => model.Authors[ur.i].BookId)
+            </tr>
+        }
+    }

@@ -1,4 +1,5 @@
-﻿@model Books.Models.BookViewModel
+﻿@using Books.Models
+@model Books.Models.BookViewModel
 
 <script type="text/javascript">
     $(function () {
@@ -34,8 +35,7 @@
                         $('.modal-body').prepend($('#successAlert').clone());
 
                     showAlertMessage($('.modal-body #successAlert'), result.message);
-                }
-                else {
+                } else {
                     if ($('.modal-body #errorAlert').length == 0)
                         $('.modal-body').prepend($('#errorAlert').clone());
 
@@ -45,8 +45,30 @@
         });
     });
 
-    $('#authDel').click(function() {
-        $(this).closest('tr').remove();
+    function deleteAuthor(id) {
+        console.log($(this));
+        $('#authorsBody' + ' #' + id).remove();
+    }
+
+
+    $('#authAdd').click(function() {
+        var lastId = 0;
+        var authCount = 0;
+        var auths = $('#authorsBody').find('tr');
+
+        if (auths.length > 0) {
+            lastId = auths.last().prop('id');
+            authCount = auths.length;
+        }
+
+        $.ajax({
+            url: '@Url.Action("GetAuthorRow", "Book")',
+            type: 'GET',
+            data: { id: lastId, bookId: @Model.Id, authCount: authCount },
+            success: function(result) {
+                $('#authorsBody').append(result);
+            }
+        });
     });
 
 </script>
@@ -118,14 +140,14 @@
                     <div class="form-group">
                         @Html.LabelFor(model => model.Authors, new { @class = "control-label col-md-3" })
                         <div class="col-md-6">
-                            <a id="authAdd" class="btn btn-primary glyphicon glyphicon-plus" href="#">Добавить</a>
+                            <a id="authAdd" class="btn btn-primary glyphicon glyphicon-plus">Добавить</a>
                             <table id="authors" class="table table-bordered">
                                 <thead>
                                 <th>Фамилия</th>
                                 <th>Имя</th>
                                 <th></th>
                                 </thead>
-                                <tbody id="departmentData">
+                                <tbody id="authorsBody">
                                     @foreach (var ur in Model.Authors.Select((value, i) => new { i, value }))
                                     {
                                         <tr id="@Model.Authors[ur.i].Id">
@@ -140,7 +162,7 @@
 
                                             </td>
                                             <td class="text-center">
-                                                <a id="authDel" class="glyphicon glyphicon-trash" href="#"></a>
+                                                <a class="glyphicon glyphicon-trash" onclick="deleteAuthor(@Model.Authors[ur.i].Id)" href="#"></a>
                                             </td>
                                             @Html.HiddenFor(model => model.Authors[ur.i].Id)
                                             @Html.HiddenFor(model => model.Authors[ur.i].BookId)
