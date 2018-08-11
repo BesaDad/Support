@@ -1,11 +1,21 @@
-﻿@model List<Books.Models.BookViewModel>
+﻿@using GridMvc.Html
+@model List<Books.Models.BookViewModel>
 
 <div>
     <a type="button" class="btn btn-primary"data-toggle="modal" data-target="#dialogModalLg" href="@Url.Action("CreateEditBook", "Book")">
         <span class="glyphicon glyphicon-plus"></span>Добавить
     </a>
 </div>
-<table class="table table-bordered margin-b0">
+@Html.Grid(Model).Columns(columns =>
+{
+    columns.Add(c => c.Tittle).Titled("Заголовок").Sanitized(false).Encoded(false).RenderValueAs(model => Html.ActionLink(model.Tittle,
+        "CreateEditBook", "Book", new {id = model.Id}, new {data_toggle = "modal", data_target = "#dialogModalLg"}).ToHtmlString());
+    columns.Add(c => c.PublishYear).Titled("Год публикации");
+    columns.Add(c => c.Id).Titled(" ").Sanitized(false).Encoded(false).RenderValueAs(model => Ajax.ActionLink(" ",
+        "DeleteBook", "Book", new { id = model.Id }, new AjaxOptions {HttpMethod = "POST", Confirm = "Вы уверены что хотите удалить книгу?", OnSuccess = "onSuccessDeleteBook", OnFailure = "onFailureDeleteBook" },
+        new {@class = "glyphicon glyphicon-trash"}).ToHtmlString());
+}).WithPaging(3).Sortable(true).WithPaging(5).
+@*<table class="table table-bordered margin-b0">
     <thead>
     <th>Заголовок</th>
     <th>Год публикации</th>
@@ -26,4 +36,4 @@
             </tr>
         }
     </tbody>
-</table>
+</table>*@

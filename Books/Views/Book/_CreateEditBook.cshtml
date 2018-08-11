@@ -46,7 +46,6 @@
     });
 
     function deleteAuthor(id) {
-        console.log($(this));
         $('#authorsBody' + ' #' + id).remove();
     }
 
@@ -140,7 +139,7 @@
                     <div class="form-group">
                         @Html.LabelFor(model => model.Authors, new { @class = "control-label col-md-3" })
                         <div class="col-md-6">
-                            <a id="authAdd" class="btn btn-primary glyphicon glyphicon-plus">Добавить</a>
+                            <a id="authAdd" class="btn btn-primary glyphicon glyphicon-plus" href="#"></a>
                             <table id="authors" class="table table-bordered">
                                 <thead>
                                 <th>Фамилия</th>
