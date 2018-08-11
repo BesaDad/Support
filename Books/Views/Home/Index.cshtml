@@ -6,9 +6,7 @@
 }
 @section scripts
 {
-    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
     <script type="text/javascript">
-
         $(function () {
             $(".modal").on('hidden.bs.modal', function () {
                 //var kendoUpload = $("#files").data("kendoUpload");
@@ -31,8 +29,9 @@
         });
 
         function OnSuccessCreateEditBook(data) {
-            $('#bookListForm').closest('.modal').modal('hide');
-            //$('#bookListForm').submit();
+            $('#createEditBookForm').closest('.modal').modal('hide');
+            $('#bookListForm').submit();
+            showAlertMessage($('#successAlert'), data.message);
         }
 
         function onFailureFormDefault(data) {
@@ -43,7 +42,8 @@
         }
 
         function onSuccessDeleteBook(data) {
-            //$('#bookListForm').submit();
+            $('#bookListForm').submit();
+            showAlertMessage($('#successAlert'), data.message);
         }
 
         function onFailureDeleteBook(data) {

@@ -1,26 +1,5 @@
 ﻿@model List<Books.Models.BookViewModel>
 
-@*<script type="text/javascript">
-    $(document).ready(function () {
-        $('#child_Value_SexId').prop("disabled", true);
-
-        $("#childInfoCreateEditForm  #PerinatalRiskGestWeek").inputmask('integer',
-            { min: '1', max: '99', allowPlus: false, allowMinus: false, unmaskAsNumber: true }
-        );
-        $("#childInfoCreateEditForm  #PerinatalRiskGestDays").inputmask('integer',
-           { min: '1', max: '99', allowPlus: false, allowMinus: false, unmaskAsNumber: true }
-       );
-        $("#childInfoCreateEditForm  #MotherHeight").inputmask('integer',
-            { min: '1', max: '250', allowPlus: false, allowMinus: false, unmaskAsNumber: true }
-        );
-    });
-
-
-    function onFailureDeleteBook(data) {
-        DisplayAlertErrors("createEditBookForm", JSON.parse(data.responseText).errors, $("#createEditBookForm"));
-    }
-</script>*@
-
 <div>
     <a type="button" class="btn btn-primary"data-toggle="modal" data-target="#dialogModalLg" href="@Url.Action("CreateEditBook", "Book")">
         <span class="glyphicon glyphicon-plus"></span>Добавить

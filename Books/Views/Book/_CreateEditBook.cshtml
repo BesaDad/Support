@@ -1,6 +1,5 @@
 ﻿@model Books.Models.BookViewModel
 
-<script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
 <script type="text/javascript">
     $(function () {
             $("#@Html.IdFor(m => m.ISBN)").inputmask("999-9-99-999999-9", { clearIncomplete: true });
@@ -43,12 +42,11 @@
                     showAlertMessage($('.modal-body #errorAlert'), result.message);
                 }
             }
-            //,
-            //complete: function() {
-            //    $.validator.unobtrusive.parse('form');
-            //    // And so on.
-            //}
         });
+    });
+
+    $('#authDel').click(function() {
+        $(this).closest('tr').remove();
     });
 
 </script>
@@ -70,9 +68,8 @@
                 </div>
             </div>
         </form>
-        @using (Ajax.BeginForm("CreateEditBook", "Book", new { area = "" },
-                        new AjaxOptions { OnSuccess = "OnSuccessCreateEditBook", OnFailure = "onFailureFormDefault", HttpMethod = "POST" },
-                        new { enctype = "multipart/form-data", id = "createEditBookForm", autocomplete = "off", @class = "form-horizontal" }))
+        @using (Ajax.BeginForm("CreateEditBook", "Book", new { area = "" }, new AjaxOptions { OnSuccess = "OnSuccessCreateEditBook", OnFailure = "onFailureFormDefault", HttpMethod = "POST" },
+                        new { id = "createEditBookForm", autocomplete = "off", @class = "form-horizontal" }))
         {
             @Html.AntiForgeryToken()
             @Html.HiddenFor(model => model.Id)
@@ -121,7 +118,8 @@
                     <div class="form-group">
                         @Html.LabelFor(model => model.Authors, new { @class = "control-label col-md-3" })
                         <div class="col-md-6">
-                            <table id="authors" class="table table-bordered margin-b0">
+                            <a id="authAdd" class="btn btn-primary glyphicon glyphicon-plus" href="#">Добавить</a>
+                            <table id="authors" class="table table-bordered">
                                 <thead>
                                 <th>Фамилия</th>
                                 <th>Имя</th>
@@ -130,14 +128,22 @@
                                 <tbody id="departmentData">
                                     @foreach (var ur in Model.Authors.Select((value, i) => new { i, value }))
                                     {
-                                        <tr id="@ur.value.Id">
-                                            <td>@ur.value.LastName</td>
-                                            <td>@ur.value.FirstName</td>
-                                            <td class="text-center">
-                                                <a class="glyphicon glyphicon-trash" href="#"></a>
+                                        <tr id="@Model.Authors[ur.i].Id">
+                                            <td>
+                                                @Html.TextBoxFor(model => model.Authors[ur.i].LastName)
+                                                @Html.ValidationMessageFor(model => model.Authors[ur.i].LastName, "", new { @class = "text-danger" })
+
                                             </td>
-                                            @Html.HiddenFor(model => ur.value.Id)
-                                            @Html.HiddenFor(model => ur.value.BookId)
+                                            <td>
+                                                @Html.TextBoxFor(model => model.Authors[ur.i].FirstName)
+                                                @Html.ValidationMessageFor(model => model.Authors[ur.i].FirstName, "", new { @class = "text-danger" })
+
+                                            </td>
+                                            <td class="text-center">
+                                                <a id="authDel" class="glyphicon glyphicon-trash" href="#"></a>
+                                            </td>
+                                            @Html.HiddenFor(model => model.Authors[ur.i].Id)
+                                            @Html.HiddenFor(model => model.Authors[ur.i].BookId)
                                         </tr>
                                     }
                                 </tbody>

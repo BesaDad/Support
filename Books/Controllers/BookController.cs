@@ -121,13 +121,19 @@ namespace Books.Controllers
             try
             {
                 var book = Mapper.Map<Book>(model);
-
+                string messageSuccess;
                 if (model.Id == 0)
+                {
                     _bookService.Create(book);
+                    messageSuccess = "Книга успешно добавлена.";
+                }
                 else
+                {
                     _bookService.Edit(book);
+                    messageSuccess = "Книга успешно изменена.";
+                }
 
-                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = true, message = messageSuccess }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -143,7 +149,7 @@ namespace Books.Controllers
             try
             {
                 _unitOfWork.Books.DeleteAll(it => it.Id == id);
-                return Json(new { success = true }, JsonRequestBehavior.AllowGet);
+                return Json(new { success = true, message = "Книга успешно удалена." }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception)
             {
