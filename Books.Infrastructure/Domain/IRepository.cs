@@ -8,18 +8,14 @@ namespace Books.Infrastructure.Domain
 {
     public interface IRepository<T> where T : class
     {
-        List<T> All();
+        IEnumerable<T> All();
 
         void Create(T entity);
 
-        void Update(int index, T entity);
-
-        int GetIndex(Predicate<T> predicate);
-
         void Delete(T entity);
 
-        List<T> Filter(Predicate<T> predicate);
+        void Update(T entity);
 
-        void DeleteAll(Predicate<T> predicate);
+        IEnumerable<T> Filter(Func<T, bool> predicate);
     }
 }

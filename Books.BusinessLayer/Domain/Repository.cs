@@ -1,6 +1,7 @@
 ﻿using Books.Infrastructure.Domain;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -10,53 +11,44 @@ namespace Books.BusinessLayer.Domain
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private static readonly List<T> _dataSet = new List<T>();
 
-        public List<T> All()
+        private static readonly DbContext _context;
+        private static readonly DbSet<T> _dbSet;
+
+        //public Repository(DbContext context)
+        //{
+        //    _context = context;
+        //    _dbSet = context.Set<T>();
+        //}
+
+        public IEnumerable<T> All()
         {
-            return _dataSet.ToList();
+            return _dbSet.ToList();
         }
 
         public void Create(T entity)
         {
-            _dataSet.Add(entity);
+            _dbSet.Add(entity);
         }
 
-        public void Update(int index, T entity)
+        public void Update(T entity)
         {
-            _dataSet.RemoveAt(index);
-            _dataSet.Insert(index, entity);
+            _context.Entry(entity).State = EntityState.Modified;
         }
 
         public void Delete(T entity)
         {
-            _dataSet.Remove(entity);
+            _dbSet.Remove(entity);
         }
 
-        public List<T> Filter(Predicate<T> predicate)
+        public IEnumerable<T> Filter(Func<T, bool> predicate)
         {
-            if (predicate != null)
-            {
-                return _dataSet.FindAll(predicate);
-            }
-            else
-            {
-                return _dataSet;
-            }
+            return _dbSet.AsNoTracking().Where(predicate).ToList();
         }
 
-        public void DeleteAll(Predicate<T> predicate)
+        public int Save(T entity)
         {
-            if (predicate != null)
-            {
-                _dataSet.RemoveAll(predicate);
-            }
+             return _context.SaveChanges();
         }
-
-        public int GetIndex(Predicate<T> predicate)
-        {
-            return _dataSet.FindIndex(predicate);
-        }
-        
     }
 }

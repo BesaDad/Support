@@ -13,6 +13,7 @@ namespace Books.BusinessLayer.Services
     {
         IUnitOfWork _unitOfWork;
 
+
         public BookService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
@@ -40,8 +41,8 @@ namespace Books.BusinessLayer.Services
                 author.BookId = book.Id;
             }
 
-            var indexByUpdate = _unitOfWork.Books.GetIndex(it => it.Id == book.Id);
-            _unitOfWork.Books.Update(indexByUpdate, book);
+            _unitOfWork.Books.Update(book);
+            _unitOfWork.Save();
         }
     }
 }

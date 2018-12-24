@@ -74,7 +74,7 @@ namespace Books.Controllers
                 OrderType =  TempData["OrderType"]?.ToString()
             };
 
-            model.Books = Mapper.Map<List<BookViewModel>>(list.GetSortetList(model.OrderProp, model.OrderType));
+            model.Books = Mapper.Map<List<BookViewModel>>(list.ToList().GetSortetList(model.OrderProp, model.OrderType));
             return View(model);
         }
 

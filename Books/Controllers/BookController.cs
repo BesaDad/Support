@@ -35,7 +35,7 @@ namespace Books.Controllers
 
             var list = _unitOfWork.Books.All();
 
-            var model = Mapper.Map<List<BookViewModel>>(list.GetSortetList(orderProp, orderType));
+            var model = Mapper.Map<List<BookViewModel>>(list.ToList().GetSortetList(orderProp, orderType));
 
             return PartialView("_BookList", model);
         }
@@ -162,7 +162,15 @@ namespace Books.Controllers
         {
             try
             {
-                _unitOfWork.Books.DeleteAll(it => it.Id == id);
+                var books = _unitOfWork.Books.Filter(it => it.Id == id);
+                if (books.Any())
+                {
+                    foreach (var book in books)
+                    {
+                        _unitOfWork.Books.Delete(book);
+                    }
+                }
+
                 return Json(new { success = true, message = "Книга успешно удалена." }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception)
