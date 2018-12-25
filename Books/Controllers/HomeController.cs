@@ -66,6 +66,7 @@ namespace Books.Controllers
                 }
             }
 
+            _unitOfWork.Save();
             var list = _unitOfWork.Books.All();
 
             var model = new BooksSearchViewModel

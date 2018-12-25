@@ -21,28 +21,13 @@ namespace Books.BusinessLayer.Services
 
         public void Create(Book book)
         {
-            foreach (var author in book.Authors.Select((value, index) => new { Value = value, Index = index }))
-            {
-                author.Value.Id = author.Index + 1;
-                author.Value.BookId = book.Id;
-            }
-
-            var lastBook = _unitOfWork.Books.All().OrderByDescending(it => it.Id).FirstOrDefault();
-            book.Id = (lastBook?.Id ?? 0) + 1;
             _unitOfWork.Books.Create(book);
+
         }
 
         public void Edit(Book book)
         {
-            var lastAuthorId = book.Authors.OrderByDescending(it => it.Id).FirstOrDefault()?.Id ?? 0;
-            foreach (var author in book.Authors.Where(it=>it.Id == 0))
-            {
-                author.Id = ++lastAuthorId;
-                author.BookId = book.Id;
-            }
-
-            _unitOfWork.Books.Update(book);
-            _unitOfWork.Save();
+           _unitOfWork.Books.Update(book);
         }
     }
 }

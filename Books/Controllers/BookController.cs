@@ -137,6 +137,7 @@ namespace Books.Controllers
                     messageSuccess = "Книга успешно изменена.";
                 }
 
+                _unitOfWork.Save();
                 return Json(new { success = true, message = messageSuccess }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
