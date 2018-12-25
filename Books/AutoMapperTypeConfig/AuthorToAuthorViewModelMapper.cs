@@ -13,7 +13,7 @@ namespace Books.AutoMapperTypeConfig
     {
         public void Configure()
         {
-            Mapper.CreateMap<Author, AuthorViewModel>();                
+            Mapper.CreateMap<Author, AuthorViewModel>();            
         }
     }
 }

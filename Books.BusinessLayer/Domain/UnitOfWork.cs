@@ -5,27 +5,44 @@ using System.Threading.Tasks;
 
 namespace Books.BusinessLayer.Domain
 {
-    public class UnitOfWork : DbContext, IUnitOfWork
+    public class UnitOfWork : IUnitOfWork
     {
-        private static DbContext _context;
+        private BookContext db;
+        private Repository<Book> _book;
+        private Repository<Author> _author;
 
-        public UnitOfWork() 
-            : base("TeleConnectionString")
+        public UnitOfWork()
         {
-            _context.Configuration.LazyLoadingEnabled = false;
+            db = new BookContext();
+        }
+        public IRepository<Book> Books
+        {
+            get
+            {
+                if (_book == null)
+                    _book = new Repository<Book>(db);
+                return _book;
+            }
         }
 
-        private IRepository<Book> _books;
-        public IRepository<Book> Books => _books ?? new Repository<Book>();
+        public IRepository<Author> Authors
+        {
+            get
+            {
+                if (_author == null)
+                    _author = new Repository<Author>(db);
+                return _author;
+            }
+        }
 
         public int Save()
         {
-            return _context.SaveChanges();
+            return db.SaveChanges();
         }
 
         public Task<int> SaveAsync()
         {
-            return _context.SaveChangesAsync();
+            return db.SaveChangesAsync();
         }
     }
 }

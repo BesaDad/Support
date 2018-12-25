@@ -10,6 +10,7 @@ namespace Books.Infrastructure.Domain
     public interface IUnitOfWork
     {
         IRepository<Book> Books { get; }
+        IRepository<Author> Authors { get; }
         int Save();
         Task<int> SaveAsync();
     }

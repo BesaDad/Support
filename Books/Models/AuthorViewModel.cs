@@ -21,5 +21,7 @@ namespace Books.Models
         [Required(ErrorMessage = "Обязательное поле")]
         [Display(Name = "Имя автора")]
         public string LastName { get; set; }
+
+        public BookViewModel Book { get; set; }
     }
 }

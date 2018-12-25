@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BookContext.cs" />
     <Compile Include="Domain\Repository.cs" />
     <Compile Include="Domain\UnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

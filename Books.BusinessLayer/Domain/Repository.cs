@@ -12,23 +12,23 @@ namespace Books.BusinessLayer.Domain
     public class Repository<T> : IRepository<T> where T : class
     {
 
-        private static readonly DbContext _context;
-        private static readonly DbSet<T> _dbSet;
+        private DbContext _context;
+        private DbSet<T> _db;
 
-        //public Repository(DbContext context)
-        //{
-        //    _context = context;
-        //    _dbSet = context.Set<T>();
-        //}
+        public Repository(BookContext context)
+        {
+            _context = context;
+            _db = context.Set<T>();
+        }
 
         public IEnumerable<T> All()
         {
-            return _dbSet.ToList();
+            return _db.ToList();
         }
 
         public void Create(T entity)
         {
-            _dbSet.Add(entity);
+            _db.Add(entity);
         }
 
         public void Update(T entity)
@@ -38,17 +38,12 @@ namespace Books.BusinessLayer.Domain
 
         public void Delete(T entity)
         {
-            _dbSet.Remove(entity);
+            _db.Remove(entity);
         }
 
         public IEnumerable<T> Filter(Func<T, bool> predicate)
         {
-            return _dbSet.AsNoTracking().Where(predicate).ToList();
-        }
-
-        public int Save(T entity)
-        {
-             return _context.SaveChanges();
+            return _db.AsNoTracking().Where(predicate).ToList();
         }
     }
 }
