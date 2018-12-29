@@ -11,6 +11,7 @@ namespace Books.Infrastructure.Domain
     {
         IRepository<Book> Books { get; }
         IRepository<Author> Authors { get; }
+        IRepository<Paint> Paints { get; }
         int Save();
         Task<int> SaveAsync();
     }

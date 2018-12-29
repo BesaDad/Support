@@ -10,6 +10,7 @@ namespace Books.BusinessLayer.Domain
         private BookContext db;
         private Repository<Book> _book;
         private Repository<Author> _author;
+        private Repository<Paint> _paint;
 
         public UnitOfWork()
         {
@@ -32,6 +33,16 @@ namespace Books.BusinessLayer.Domain
                 if (_author == null)
                     _author = new Repository<Author>(db);
                 return _author;
+            }
+        }
+
+        public IRepository<Paint> Paints
+        {
+            get
+            {
+                if (_paint == null)
+                    _paint = new Repository<Paint>(db);
+                return _paint;
             }
         }
 

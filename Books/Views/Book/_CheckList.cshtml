@@ -1,0 +1,37 @@
+﻿@using Books.Models
+@model CheckParamsViewModel
+
+<script type="text/javascript">
+    $(function () {
+           
+    });
+
+</script>
+
+<div class="modal-body">
+    <div class="well">
+        @using (Ajax.BeginForm("TeleCheck", "Book", new { area = "" }, new AjaxOptions { OnFailure = "onFailureFormDefault", HttpMethod = "POST" },
+                        new { id = "checkList", autocomplete = "off", @class = "form-horizontal" }))
+        {
+            @Html.HiddenFor(m=>m.Hash)
+            <div class="row">
+                @*<div class="col-md-5">
+                        <img src="~/App_Data/SkachatsLetitbit.jpg" />
+                    </div>*@
+                <div class="col-md-10">
+                    <div class="form-group">
+                        @Html.LabelFor(m=>m.Code, new { @class = "control-label col-md-3" })
+                        <div class="col-md-2">
+                            @Html.TextBoxFor(m => m.Code)
+                            @Html.ValidationMessageFor(m => m.Code, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="buttons-wrap">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+                <button id="btnCancel" type="button" class="btn" data-dismiss="modal">Отменить</button>
+            </div>
+        }
+    </div>
+</div>
