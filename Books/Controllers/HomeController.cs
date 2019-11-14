@@ -1,15 +1,14 @@
 ﻿using AutoMapper;
-using Books.Domain.Models;
-using Books.Infrastructure.Domain;
-using Books.Models;
+using Tele.Domain.Models;
+using Tele.Infrastructure.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Books.Utility;
+using Tele.Utility;
 
-namespace Books.Controllers
+namespace Tele.Controllers
 {
     public class HomeController : Controller
     {
@@ -21,62 +20,7 @@ namespace Books.Controllers
 
         public ActionResult Index()
         {
-            if (!_unitOfWork.Books.All().Any())
-            {
-                var initialBooks = new List<Book> {
-                    new Book
-                    {
-                        Id = 1,
-                        Tittle = "Робинзон Крузо",
-                        PageCount = 300,
-                        PublishName = "Лунный свет",
-                        PublishYear = 2011,
-                        Authors = new List<Author>
-                        {
-                            new Author {
-                                Id = 1,
-                                BookId = 1,
-                                LastName = "Стивенсон",
-                                FirstName = "Роберт"
-                            }
-                        }
-                    },
-                    new Book
-                    {
-                        Id = 2,
-                        Tittle = "Братья Карамазовы",
-                        PageCount = 500,
-                        PublishName = "Старая Россия",
-                        PublishYear = 2003,
-                        Authors = new List<Author>
-                        {
-                            new Author {
-                                Id = 2,
-                                BookId = 2,
-                                LastName = "Федор",
-                                FirstName = "Достоевский"
-                            }
-                        }
-                    }
-                };
-
-                foreach (var b in initialBooks)
-                {
-                    _unitOfWork.Books.Create(b);
-                }
-            }
-
-            _unitOfWork.Save();
-            var list = _unitOfWork.Books.All();
-
-            var model = new BooksSearchViewModel
-            {
-                OrderProp =  TempData["OrderProp"]?.ToString(),
-                OrderType =  TempData["OrderType"]?.ToString()
-            };
-
-            model.Books = Mapper.Map<List<BookViewModel>>(list.ToList().GetSortetList(model.OrderProp, model.OrderType));
-            return View(model);
+            return View();
         }
 
         public ActionResult About()

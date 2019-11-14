@@ -1,4 +1,4 @@
-﻿using Books.Infrastructure.Domain;
+﻿using Tele.Infrastructure.Domain;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Books.BusinessLayer.Domain
+namespace Tele.BusinessLayer.Domain
 {
     public class Repository<T> : IRepository<T> where T : class
     {
@@ -15,7 +15,7 @@ namespace Books.BusinessLayer.Domain
         private DbContext _context;
         private DbSet<T> _db;
 
-        public Repository(BookContext context)
+        public Repository(TeleContext context)
         {
             _context = context;
             _db = context.Set<T>();

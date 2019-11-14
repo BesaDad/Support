@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Books.Infrastructure.AutoMappingConfig
+namespace Tele.Infrastructure.AutoMappingConfig
 {
     public interface IAutoMapperTypeConfigurator
     {

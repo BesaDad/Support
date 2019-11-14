@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace Books
+namespace Tele
 {
     public class BundleConfig
     {
@@ -16,8 +16,8 @@ namespace Books
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
 
-            bundles.Add(new ScriptBundle("~/bundles/bookJs").Include(
-                        "~/Scripts/app/book.js"));
+            bundles.Add(new ScriptBundle("~/bundles/teleJs").Include(
+                        "~/Scripts/app/tele.js"));
             bundles.Add(new ScriptBundle("~/bundles/inputmask").Include(
                         "~/Scripts/jquery.inputmask/inputmask.js",
                         "~/Scripts/jquery.inputmask/jquery.inputmask.js",

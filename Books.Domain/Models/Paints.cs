@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Books.Domain.Models
+namespace Tele.Domain.Models
 {
     [Table("Paints")]
     public class Paint

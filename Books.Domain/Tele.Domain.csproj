@@ -47,8 +47,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Author.cs" />
-    <Compile Include="Models\Book.cs" />
     <Compile Include="Models\Paints.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

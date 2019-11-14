@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Books.Utility
+namespace Tele.Utility
 {
     public static class ModelStateDictionaryExtensions
     {

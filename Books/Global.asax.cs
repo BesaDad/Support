@@ -1,5 +1,5 @@
-﻿using Books.Infrastructure.AutoMappingConfig;
-using Books.Web.Utility;
+﻿using Tele.Infrastructure.AutoMappingConfig;
+using Tele.Web.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 
-namespace Books
+namespace Tele
 {
     public class MvcApplication : System.Web.HttpApplication
     {

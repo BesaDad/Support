@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
-using Books.Domain.Models;
-using Books.Models;
+using Tele.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Books.Web.Utility
+namespace Tele.Web.Utility
 {
     public class AutoMapperBootStrapper
     {
@@ -19,8 +18,7 @@ namespace Books.Web.Utility
 
         public static void BootStrap()
         {
-            Mapper.CreateMap<Book, BookViewModel>()
-                .ForMember(x => x.Image, opt => opt.Ignore()); 
+
         }
     }
 }

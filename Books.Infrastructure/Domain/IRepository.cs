@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Books.Infrastructure.Domain
+namespace Tele.Infrastructure.Domain
 {
     public interface IRepository<T> where T : class
     {

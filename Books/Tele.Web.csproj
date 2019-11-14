@@ -190,19 +190,11 @@
     <Compile Include="App_Start\Ninject.Web.Common.cs" />
     <Compile Include="App_Start\NinjectConfigAutoMapper.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="AutoMapperTypeConfig\AuthorViewModelToAuthorMapper.cs" />
-    <Compile Include="AutoMapperTypeConfig\AuthorToAuthorViewModelMapper.cs" />
-    <Compile Include="AutoMapperTypeConfig\BookViewModelToBookMapper.cs" />
-    <Compile Include="AutoMapperTypeConfig\BookToBookViewModelMapper.cs" />
-    <Compile Include="Controllers\BookController.cs" />
+    <Compile Include="Controllers\TeleController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\AuthorViewModel.cs" />
-    <Compile Include="Models\BooksSearchViewModel.cs" />
-    <Compile Include="Models\BookViewModel.cs" />
-    <Compile Include="Models\CheckParamsViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\AutoMapperBootStrapper.cs" />
     <Compile Include="Utility\BookExtensions.cs" />
@@ -223,7 +215,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Scripts\app\book.js" />
+    <Content Include="Scripts\app\tele.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -282,16 +274,13 @@
     <Content Include="Views\Shared\EditorTemplates\String.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Time.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Url.cshtml" />
-    <Content Include="Views\Book\_CreateEditBook.cshtml" />
-    <Content Include="Views\Book\_BookList.cshtml" />
-    <Content Include="Views\Book\_UploadImage.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Book\_AuthorRow.cshtml" />
-    <Content Include="Views\Book\_CheckList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="AutoMapperTypeConfig\" />
+    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -307,17 +296,17 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Books.BusinessLayer\Books.BusinessLayer.csproj">
+    <ProjectReference Include="..\Books.BusinessLayer\Tele.BusinessLayer.csproj">
       <Project>{AEEB19A7-3A00-48F7-AFFA-3ADA895C3CCB}</Project>
-      <Name>Books.BusinessLayer</Name>
+      <Name>Tele.BusinessLayer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Books.Domain\Books.Domain.csproj">
+    <ProjectReference Include="..\Books.Domain\Tele.Domain.csproj">
       <Project>{82213FB5-3788-4969-90AC-07FFEFEB60B7}</Project>
-      <Name>Books.Domain</Name>
+      <Name>Tele.Domain</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Books.Infrastructure\Books.Infrastructure.csproj">
+    <ProjectReference Include="..\Books.Infrastructure\Tele.Infrastructure.csproj">
       <Project>{D28793D6-B25F-4BBB-8B21-E0674DD90789}</Project>
-      <Name>Books.Infrastructure</Name>
+      <Name>Tele.Infrastructure</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

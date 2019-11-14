@@ -1,14 +1,14 @@
-[assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Books.App_Start.NinjectWebCommon), "Start")]
-[assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(Books.App_Start.NinjectWebCommon), "Stop")]
+[assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Tele.App_Start.NinjectWebCommon), "Start")]
+[assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(Tele.App_Start.NinjectWebCommon), "Stop")]
 
-namespace Books.App_Start
+namespace Tele.App_Start
 {
     using System;
     using System.Web;
-    using Books.BusinessLayer.Domain;
-    using Books.BusinessLayer.Services;
-    using Books.Infrastructure.Business;
-    using Books.Infrastructure.Domain;
+    using Tele.BusinessLayer.Domain;
+    using Tele.BusinessLayer.Services;
+    using Tele.Infrastructure.Business;
+    using Tele.Infrastructure.Domain;
     using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 
     using Ninject;
@@ -67,7 +67,7 @@ namespace Books.App_Start
             NinjectConfigAutoMapper.ConfigureAutoMapper(kernel);
 
             kernel.Bind<IUnitOfWork>().To<UnitOfWork>().InRequestScope();
-            kernel.Bind<IBookService>().To<BookService>().InRequestScope();
+            kernel.Bind<ITeleService>().To<TeleService>().InRequestScope();
         }        
     }
 }
