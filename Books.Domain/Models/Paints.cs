@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace Tele.Domain.Models
 {
-    [Table("Paints")]
-    public class Paint
+    [Table("Contacts")]
+    public class Contact
     {
         [Key]
         public int Id { get; set; }
@@ -27,7 +27,7 @@ namespace Tele.Domain.Models
         public bool Bot { get; set; }
         public bool Deleted { get; set; }
         public bool MutualContact { get; set; }
-        public bool Contact { get; set; }
+        public bool IsContact { get; set; }
         public bool Self { get; set; }
         public int Flags { get; set; }
         public string BotInlinePlaceholder { get; set; }

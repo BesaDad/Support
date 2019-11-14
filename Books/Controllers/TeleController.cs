@@ -16,6 +16,7 @@ using System.Web.Management;
 using TeleSharp.TL.Contacts;
 using TeleSharp.TL;
 using TLSharp.Core;
+using Books.Models;
 
 namespace Tele.Controllers
 {
@@ -25,9 +26,9 @@ namespace Tele.Controllers
         private readonly ITeleService _teleService;
         private readonly TelegramClient _client;
 
-        private readonly int apiId = 773874;
-        private readonly string apiHash = "8a71d40e68df57548df4433b0eb7c1e3";
-        private readonly string phoneNumber = "77470914908";
+        //private readonly int apiId = 773874;
+        //private readonly string apiHash = "8a71d40e68df57548df4433b0eb7c1e3";
+        //private readonly string phoneNumber = "77470914908";
 
         public TeleController(IUnitOfWork unitOfWork, ITeleService teleService)
         {
@@ -35,20 +36,20 @@ namespace Tele.Controllers
             _teleService = teleService;
         }
 
-        [HttpGet]
-        public async Task<JsonResult> TeleCheck()
+        [HttpPost]
+        public async Task<JsonResult> TeleCheck(UserApi userApi)
         {
             try
             {
-                var client = new TLSharp.Core.TelegramClient(apiId, apiHash);
+                var client = new TLSharp.Core.TelegramClient(userApi.ApiId, userApi.ApiHash);
                 await client.ConnectAsync();
 
                 var user = new TLUser();
                 if (!client.IsUserAuthorized())
                 {
-                    var hash1 = await client.SendCodeRequestAsync(phoneNumber);
-                    var code1 = "65904";
-                    user = await client.MakeAuthAsync(phoneNumber, hash1, code1);
+                    var hash = await client.SendCodeRequestAsync(userApi.PhoneNumber);
+                    var checkCode = "65904";
+                    user = await client.MakeAuthAsync(userApi.PhoneNumber, hash, checkCode);
                 }
 
                 if (client.IsConnected)
@@ -65,7 +66,7 @@ namespace Tele.Controllers
                             var newUs = (TLUser)us;
                             if (!allUsers.Where(it => it.Phone == newUs.Phone).Any())
                             {
-                                _unitOfWork.Paints.Create(new Paint
+                                _unitOfWork.Paints.Create(new Contact
                                 {
                                     Phone = newUs.Phone,
                                     Username = newUs.Username,
@@ -79,7 +80,7 @@ namespace Tele.Controllers
                                     Bot = newUs.Bot,
                                     Deleted = newUs.Deleted,
                                     MutualContact = newUs.MutualContact,
-                                    Contact = newUs.Contact,
+                                    IsContact = newUs.Contact,
                                     Self = newUs.Self,
                                     Flags = newUs.Flags,
                                     BotInlinePlaceholder = newUs.BotInlinePlaceholder

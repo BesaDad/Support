@@ -8,7 +8,7 @@ namespace Tele.BusinessLayer.Domain
     public class UnitOfWork : IUnitOfWork
     {
         private TeleContext db;
-        private Repository<Paint> _paint;
+        private Repository<Contact> _paint;
 
         public UnitOfWork()
         {
@@ -16,12 +16,12 @@ namespace Tele.BusinessLayer.Domain
         }
    
 
-        public IRepository<Paint> Paints
+        public IRepository<Contact> Paints
         {
             get
             {
                 if (_paint == null)
-                    _paint = new Repository<Paint>(db);
+                    _paint = new Repository<Contact>(db);
                 return _paint;
             }
         }

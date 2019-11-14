@@ -1,37 +1,47 @@
-﻿@{
+﻿@model Books.Models.UserApi
+@{
     ViewBag.Title = "Список книг";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@section scripts
-{
-    <script type="text/javascript">
-    </script>
-}
-
-<div class="row">
-</div>
-<div class="row">
-    <div class="col-md-6">
-        <a type="button" class="btn btn-primary" data-toggle="modal" data-target="#dialogModalLg" href="@Url.Action("TeleCheck", "Tele")">
-            Запустить проверку
-        </a>
+<div class="modal-body">
+    <div class="well">
+        @using (Ajax.BeginForm("TeleCheck", "Tele", new { area = "" }, new AjaxOptions { OnSuccess = "OnSuccessTeleCheck", OnFailure = "onFailureFormDefault", HttpMethod = "POST" },
+                        new { id = "TeleCheckFormForm", autocomplete = "off", @class = "form-horizontal" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="row">
+                @*<div class="col-md-5">
+                        <img src="~/App_Data/SkachatsLetitbit.jpg" />
+                    </div>*@
+                <div class="col-md-10">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ApiId, new { @class = "control-label col-md-3" })
+                        <div class="col-md-7">
+                            @Html.TextBoxFor(model => model.ApiId, new { @class = "form-control recize-none", @maxlength = "30", @placeholder = "Не более 30 символов" })
+                            @Html.ValidationMessageFor(model => model.ApiId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ApiHash, new { @class = "control-label col-md-3" })
+                        <div class="col-md-2">
+                            @Html.TextBoxFor(model => model.ApiHash, new { @class = "form-control", @maxlength = "5" })
+                            @Html.ValidationMessageFor(model => model.ApiHash, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.PhoneNumber, new { @class = "control-label col-md-3" })
+                        <div class="col-md-7">
+                            @Html.TextBoxFor(model => model.PhoneNumber, new { @class = "form-control", @maxlength = "30", @placeholder = "Не более 30 символов" })
+                            @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                   </div>
+            </div>
+            <div class="buttons-wrap">
+                <button type="submit" class="btn btn-primary">Отправить</button>
+                <button id="btnCancel" type="button" class="btn" data-dismiss="modal">Отменить</button>
+            </div>
+        }
     </div>
-    <table>
-        <tr >
-        
-            <th>    <b>ntcn</b></th>
-                <th><b>ntcn</b></th>
-                <th><b>ntcn</b></th>
-                <th>nt<b>ntcn</b>cn</th>
-                
-</tr>
-        <tr>
-            <td>qqw</td>
-            <td>qweqwe</td>
-            <td>qweqwe</td>
-            <td>qweqwe</td>
-            <td>qweqwe</td>
-        </tr>
-    </table>
 </div>
