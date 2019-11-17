@@ -36,6 +36,11 @@ namespace Tele.Controllers
             _teleService = teleService;
         }
 
+        public ActionResult Index()
+        {
+            return View();
+        }
+
         [HttpPost]
         public async Task<JsonResult> TeleCheck(UserApi userApi)
         {
@@ -97,7 +102,7 @@ namespace Tele.Controllers
                     catch (Exception ex)
                     {
                         Response.StatusCode = (int) HttpStatusCode.BadRequest;
-                        ModelState.AddModelError("", "Произошла ошибка, обратитесь за помощью к администратору.");
+                        ModelState.AddModelError("", $"Произошла ошибка, обратитесь за помощью к администратору. {ex.Message}");
                         return Json(new {success = false, errors = ModelState.Errors()}, JsonRequestBehavior.AllowGet);
                     }
                 }

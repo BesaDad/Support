@@ -3,7 +3,15 @@
     ViewBag.Title = "Получение контактов";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<script type="text/javascript">
+    function OnSuccessTeleCheck(data) {
+        if (data.success) {
+            showAlertMessage("successAlert", data.message);
+        } else {
+            showAlertMessage("errorAlert", data.message);
+        }
+    }
+</script>
 <div class="modal-body">
     <div class="well">
         @using (Ajax.BeginForm("TeleCheck", "Tele", new { area = "" }, new AjaxOptions { OnSuccess = "OnSuccessTeleCheck", OnFailure = "onFailureFormDefault", HttpMethod = "POST" },
