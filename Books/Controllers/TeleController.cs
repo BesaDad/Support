@@ -37,19 +37,25 @@ namespace Tele.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> TeleCheck(UserApi userApi)
+        public async Task<JsonResult> ContactsList(UserApi userApi)
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    return Json(new { success = false, errors = ModelState.Errors() }, JsonRequestBehavior.AllowGet);
+                }
+
                 var client = new TLSharp.Core.TelegramClient(userApi.ApiId, userApi.ApiHash);
                 await client.ConnectAsync();
 
                 var user = new TLUser();
                 if (!client.IsUserAuthorized())
                 {
-                    var hash = await client.SendCodeRequestAsync(userApi.PhoneNumber);
-                    var checkCode = "65904";
-                    user = await client.MakeAuthAsync(userApi.PhoneNumber, hash, checkCode);
+                    var hash = await client.SendCodeRequestAsync(userApi.PhoneNumber.ToString());
+                    var checkCode = "65904";//значение из смс
+                    user = await client.MakeAuthAsync(userApi.PhoneNumber.ToString(), hash, checkCode);
                 }
 
                 if (client.IsConnected)

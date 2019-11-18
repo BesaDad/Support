@@ -3,11 +3,22 @@
     ViewBag.Title = "Получение контактов";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<script type="text/javascript">
+    function onSuccessContactsList(data) {
+        if (data.success) {
+            showAlertMessage("#successAlert", data.message);
+        } else {
+            showAlertMessage("#errorAlert", data.message);
+        }
+    }
+    function onFailureFormDefault(data) {
+        showAlertMessage("errorAlert", data.message);
+    }
+</script>
 <div class="modal-body">
     <div class="well">
-        @using (Ajax.BeginForm("TeleCheck", "Tele", new { area = "" }, new AjaxOptions { OnSuccess = "OnSuccessTeleCheck", OnFailure = "onFailureFormDefault", HttpMethod = "POST" },
-                        new { id = "TeleCheckFormForm", autocomplete = "off", @class = "form-horizontal" }))
+        @using (Ajax.BeginForm("ContactsList", "Tele", new { area = "" }, new AjaxOptions { OnSuccess = "onSuccessContactsList", OnFailure = "onFailureFormDefault", HttpMethod = "POST" },
+                        new { id = "ContactsListFormForm", autocomplete = "off", @class = "form-horizontal" }))
         {
             @Html.AntiForgeryToken()
             <div class="row">
@@ -18,21 +29,21 @@
                     <div class="form-group">
                         @Html.LabelFor(model => model.ApiId, new { @class = "control-label col-md-3" })
                         <div class="col-md-7">
-                            @Html.TextBoxFor(model => model.ApiId, new { @class = "form-control recize-none", @maxlength = "30", @placeholder = "Не более 30 символов" })
+                            @Html.TextBoxFor(model => model.ApiId, new { @class = "form-control recize-none"})
                             @Html.ValidationMessageFor(model => model.ApiId, "", new { @class = "text-danger" })
                         </div>
                     </div>
                     <div class="form-group">
                         @Html.LabelFor(model => model.ApiHash, new { @class = "control-label col-md-3" })
                         <div class="col-md-2">
-                            @Html.TextBoxFor(model => model.ApiHash, new { @class = "form-control", @maxlength = "5" })
+                            @Html.TextBoxFor(model => model.ApiHash, new { @class = "form-control"})
                             @Html.ValidationMessageFor(model => model.ApiHash, "", new { @class = "text-danger" })
                         </div>
                     </div>
                     <div class="form-group">
                         @Html.LabelFor(model => model.PhoneNumber, new { @class = "control-label col-md-3" })
                         <div class="col-md-7">
-                            @Html.TextBoxFor(model => model.PhoneNumber, new { @class = "form-control", @maxlength = "30", @placeholder = "Не более 30 символов" })
+                            @Html.TextBoxFor(model => model.PhoneNumber, new { @class = "form-control" })
                             @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
                         </div>
                     </div>
