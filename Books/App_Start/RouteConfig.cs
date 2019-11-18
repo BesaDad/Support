@@ -16,7 +16,7 @@ namespace Tele
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "Tele", action = "Index", id = UrlParameter.Optional }
             );
         }
     }

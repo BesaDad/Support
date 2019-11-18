@@ -3,12 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2042
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tele.Web", "Books\Tele.Web.csproj", "{628E96B0-69C8-4D32-BFCE-88D8C90F24DC}"
-	ProjectSection(ProjectDependencies) = postProject
-		{82213FB5-3788-4969-90AC-07FFEFEB60B7} = {82213FB5-3788-4969-90AC-07FFEFEB60B7}
-		{D28793D6-B25F-4BBB-8B21-E0674DD90789} = {D28793D6-B25F-4BBB-8B21-E0674DD90789}
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tele.Domain", "Books.Domain\Tele.Domain.csproj", "{82213FB5-3788-4969-90AC-07FFEFEB60B7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tele.Infrastructure", "Books.Infrastructure\Tele.Infrastructure.csproj", "{D28793D6-B25F-4BBB-8B21-E0674DD90789}"
@@ -18,16 +12,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tele.Infrastructure", "Book
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tele.BusinessLayer", "Books.BusinessLayer\Tele.BusinessLayer.csproj", "{AEEB19A7-3A00-48F7-AFFA-3ADA895C3CCB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tele.Web", "Books\Tele.Web.csproj", "{628E96B0-69C8-4D32-BFCE-88D8C90F24DC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{628E96B0-69C8-4D32-BFCE-88D8C90F24DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{628E96B0-69C8-4D32-BFCE-88D8C90F24DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{628E96B0-69C8-4D32-BFCE-88D8C90F24DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{628E96B0-69C8-4D32-BFCE-88D8C90F24DC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{82213FB5-3788-4969-90AC-07FFEFEB60B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{82213FB5-3788-4969-90AC-07FFEFEB60B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82213FB5-3788-4969-90AC-07FFEFEB60B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -40,6 +32,10 @@ Global
 		{AEEB19A7-3A00-48F7-AFFA-3ADA895C3CCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AEEB19A7-3A00-48F7-AFFA-3ADA895C3CCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AEEB19A7-3A00-48F7-AFFA-3ADA895C3CCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{628E96B0-69C8-4D32-BFCE-88D8C90F24DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{628E96B0-69C8-4D32-BFCE-88D8C90F24DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{628E96B0-69C8-4D32-BFCE-88D8C90F24DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{628E96B0-69C8-4D32-BFCE-88D8C90F24DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
