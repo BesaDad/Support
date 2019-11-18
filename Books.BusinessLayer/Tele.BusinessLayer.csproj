@@ -8,8 +8,8 @@
     <ProjectGuid>{AEEB19A7-3A00-48F7-AFFA-3ADA895C3CCB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Books.BusinessLayer</RootNamespace>
-    <AssemblyName>Books.BusinessLayer</AssemblyName>
+    <RootNamespace>Tele.BusinessLayer</RootNamespace>
+    <AssemblyName>Tele.BusinessLayer</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
@@ -58,7 +58,7 @@
     <Compile Include="Domain\UnitOfWork.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\BookService.cs" />
+    <Compile Include="Services\TeleService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

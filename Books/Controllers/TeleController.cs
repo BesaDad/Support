@@ -46,7 +46,7 @@ namespace Tele.Controllers
         {
             try
             {
-                var t = _unitOfWork.Contacts.All();
+                var t = _unitOfWork.Workers.All();
                 if (!ModelState.IsValid)
                 {
                     Response.StatusCode = (int)HttpStatusCode.BadRequest;
@@ -71,33 +71,33 @@ namespace Tele.Controllers
                         TLRequestGetContacts requestImportContacts = new TLRequestGetContacts();
                         var contacts = new List<TLAbsUser>();
                         var o2 = await client.GetContactsAsync();
-                        var allUsers = _unitOfWork.Contacts.All().ToList();
+                        //var allUsers = _unitOfWork.Contacts.All().ToList();
                         var users = o2.Users.ToList();
                         foreach (var us in users)
                         {
                             var newUs = (TLUser)us;
-                            if (!allUsers.Where(it => it.Phone == newUs.Phone).Any())
-                            {
-                                _unitOfWork.Contacts.Create(new Contact
-                                {
-                                    Phone = newUs.Phone,
-                                    Username = newUs.Username,
-                                                               AccessHash = newUs.AccessHash,
-                                    AccountId = newUs.Id,
-                                    FirstName = newUs.FirstName,
-                                    LastName = newUs.LastName,
-                                    LangCode = newUs.LangCode,
-                                    Verified = newUs.Verified,
-                                    BotChatHistory = newUs.BotChatHistory,
-                                    Bot = newUs.Bot,
-                                    Deleted = newUs.Deleted,
-                                    MutualContact = newUs.MutualContact,
-                                    IsContact = newUs.Contact,
-                                    Self = newUs.Self,
-                                    Flags = newUs.Flags,
-                                    BotInlinePlaceholder = newUs.BotInlinePlaceholder
-                                });
-                            }
+                            //if (!allUsers.Where(it => it.Phone == newUs.Phone).Any())
+                            //{
+                            //    _unitOfWork.Contacts.Create(new Contact
+                            //    {
+                            //        Phone = newUs.Phone,
+                            //        Username = newUs.Username,
+                            //                                   AccessHash = newUs.AccessHash,
+                            //        AccountId = newUs.Id,
+                            //        FirstName = newUs.FirstName,
+                            //        LastName = newUs.LastName,
+                            //        LangCode = newUs.LangCode,
+                            //        Verified = newUs.Verified,
+                            //        BotChatHistory = newUs.BotChatHistory,
+                            //        Bot = newUs.Bot,
+                            //        Deleted = newUs.Deleted,
+                            //        MutualContact = newUs.MutualContact,
+                            //        IsContact = newUs.Contact,
+                            //        Self = newUs.Self,
+                            //        Flags = newUs.Flags,
+                            //        BotInlinePlaceholder = newUs.BotInlinePlaceholder
+                            //    });
+                            //}
                         }
 
                         _unitOfWork.Save();

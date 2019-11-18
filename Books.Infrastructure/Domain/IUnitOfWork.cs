@@ -9,7 +9,9 @@ namespace Tele.Infrastructure.Domain
 {
     public interface IUnitOfWork
     {
-        IRepository<Contact> Contacts { get; }
+        IRepository<Worker> Workers { get; }
+        IRepository<Refer> Refers { get; }
+        IRepository<Queue> Queue { get; }
         int Save();
         Task<int> SaveAsync();
     }

@@ -8,8 +8,8 @@
     <ProjectGuid>{82213FB5-3788-4969-90AC-07FFEFEB60B7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Books.Domain</RootNamespace>
-    <AssemblyName>Books.Domain</AssemblyName>
+    <RootNamespace>Tele.Domain</RootNamespace>
+    <AssemblyName>Tele.Domain</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
@@ -53,7 +53,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Contact.cs" />
+    <Compile Include="Models\Queue.cs" />
+    <Compile Include="Models\Refer.cs" />
+    <Compile Include="Models\Worker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

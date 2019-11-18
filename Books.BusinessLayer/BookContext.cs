@@ -16,7 +16,9 @@ namespace Tele.BusinessLayer
         {
         }
         
-        public DbSet<Contact> Contacts { get; set; }
+        public DbSet<Worker> Workers { get; set; }
+        public DbSet<Refer> Refers { get; set; }
+        public DbSet<Queue> Queue { get; set; }
 
     }
 }

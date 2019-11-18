@@ -7,8 +7,8 @@
     <ProjectGuid>{D28793D6-B25F-4BBB-8B21-E0674DD90789}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Books.Infrastructure</RootNamespace>
-    <AssemblyName>Books.Infrastructure</AssemblyName>
+    <RootNamespace>Tele.Infrastructure</RootNamespace>
+    <AssemblyName>Tele.Infrastructure</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

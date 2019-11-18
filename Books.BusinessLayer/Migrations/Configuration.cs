@@ -9,7 +9,7 @@ namespace Books.BusinessLayer.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationsEnabled = false;
         }
 
         protected override void Seed(Tele.BusinessLayer.TeleContext context)

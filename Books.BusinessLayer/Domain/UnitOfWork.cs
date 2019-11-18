@@ -8,7 +8,9 @@ namespace Tele.BusinessLayer.Domain
     public class UnitOfWork : IUnitOfWork
     {
         private TeleContext db;
-        private Repository<Contact> _contacts;
+        private Repository<Worker> _workers;
+        private Repository<Refer> _refers;
+        private Repository<Queue> _queue;
 
         public UnitOfWork()
         {
@@ -16,13 +18,33 @@ namespace Tele.BusinessLayer.Domain
         }
    
 
-        public IRepository<Contact> Contacts
+        public IRepository<Worker> Workers
         {
             get
             {
-                if (_contacts == null)
-                    _contacts = new Repository<Contact>(db);
-                return _contacts;
+                if (_workers == null)
+                    _workers = new Repository<Worker>(db);
+                return _workers;
+            }
+        }
+
+        public IRepository<Refer> Refers
+        {
+            get
+            {
+                if (_refers == null)
+                    _refers = new Repository<Refer>(db);
+                return _refers;
+            }
+        }
+
+        public IRepository<Queue> Queue
+        {
+            get
+            {
+                if (_queue == null)
+                    _queue = new Repository<Queue>(db);
+                return _queue;
             }
         }
 
