@@ -9,7 +9,7 @@ namespace Tele.Infrastructure.Domain
 {
     public interface IUnitOfWork
     {
-        IRepository<Contact> Paints { get; }
+        IRepository<Contact> Contacts { get; }
         int Save();
         Task<int> SaveAsync();
     }

@@ -16,7 +16,7 @@ namespace Tele.BusinessLayer
         {
         }
         
-        public DbSet<Contact> Paints { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
 
     }
 }

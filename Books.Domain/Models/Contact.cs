@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Tele.Domain.Models
 {
-    [Table("Contacts")]
+    //[Table("Contacts")]
     public class Contact
     {
-        [Key]
+       // [Key]
         public int Id { get; set; }
 
         public string Phone { get; set; }
