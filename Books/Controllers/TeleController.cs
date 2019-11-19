@@ -18,109 +18,29 @@ using TeleSharp.TL;
 using TLSharp.Core;
 using Books.Models;
 using Tele.Models;
+using Tele.Infrastructure.Enums;
 
 namespace Tele.Controllers
 {
     public class TeleController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IReferService _teleService;
+        private readonly IReferService _referService;
         private readonly TelegramClient _client;
 
         //private readonly int apiId = 773874;
         //private readonly string apiHash = "8a71d40e68df57548df4433b0eb7c1e3";
         //private readonly string phoneNumber = "77470914908";
 
-        public TeleController(IUnitOfWork unitOfWork, IReferService teleService)
+        public TeleController(IUnitOfWork unitOfWork, IReferService referService)
         {
             _unitOfWork = unitOfWork;
-            _teleService = teleService;
+            _referService = referService;
         }
 
         public ActionResult Index()
         {
             return View();
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> ContactsList(UserApi userApi)
-        {
-            try
-            {
-                var t = _unitOfWork.Workers.All();
-                if (!ModelState.IsValid)
-                {
-                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    return Json(new { success = false, errors = ModelState.Errors() }, JsonRequestBehavior.AllowGet);
-                }
-
-                var client = new TLSharp.Core.TelegramClient(userApi.ApiId, userApi.ApiHash);
-                await client.ConnectAsync();
-
-                var user = new TLUser();
-                if (!client.IsUserAuthorized())
-                {
-                    var hash = await client.SendCodeRequestAsync(userApi.PhoneNumber.ToString());
-                    var checkCode = "65904";//значение из смс
-                    user = await client.MakeAuthAsync(userApi.PhoneNumber.ToString(), hash, checkCode);
-                }
-
-                if (client.IsConnected)
-                {
-                    try
-                    {
-                        TLRequestGetContacts requestImportContacts = new TLRequestGetContacts();
-                        var contacts = new List<TLAbsUser>();
-                        var o2 = await client.GetContactsAsync();
-                        //var allUsers = _unitOfWork.Contacts.All().ToList();
-                        var users = o2.Users.ToList();
-                        foreach (var us in users)
-                        {
-                            var newUs = (TLUser)us;
-                            //if (!allUsers.Where(it => it.Phone == newUs.Phone).Any())
-                            //{
-                            //    _unitOfWork.Contacts.Create(new Contact
-                            //    {
-                            //        Phone = newUs.Phone,
-                            //        Username = newUs.Username,
-                            //                                   AccessHash = newUs.AccessHash,
-                            //        AccountId = newUs.Id,
-                            //        FirstName = newUs.FirstName,
-                            //        LastName = newUs.LastName,
-                            //        LangCode = newUs.LangCode,
-                            //        Verified = newUs.Verified,
-                            //        BotChatHistory = newUs.BotChatHistory,
-                            //        Bot = newUs.Bot,
-                            //        Deleted = newUs.Deleted,
-                            //        MutualContact = newUs.MutualContact,
-                            //        IsContact = newUs.Contact,
-                            //        Self = newUs.Self,
-                            //        Flags = newUs.Flags,
-                            //        BotInlinePlaceholder = newUs.BotInlinePlaceholder
-                            //    });
-                            //}
-                        }
-
-                        _unitOfWork.Save();
-                        
-                        return Json(new {success = true, message = "Список проверен."}, JsonRequestBehavior.AllowGet);
-
-                    }
-
-                    catch (Exception ex)
-                    {
-                        Response.StatusCode = (int) HttpStatusCode.BadRequest;
-                        ModelState.AddModelError("", $"Произошла ошибка, обратитесь за помощью к администратору. {ex.Message}");
-                        return Json(new {success = false, errors = ModelState.Errors()}, JsonRequestBehavior.AllowGet);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "Соединение разорвано." }, JsonRequestBehavior.AllowGet);
-            }
-
-            return Json(new { success = false, message = "Соединение разорвано." }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
@@ -135,21 +55,46 @@ namespace Tele.Controllers
                 }
 
                 
-                    try
+                try
+                {
+                    var freWorkers = _referService.GetFreeWorkers();
+                    var newReferModel = new Refer()
                     {
-                        //var workerForRefer = _unitOfWork.Workers.
-                       // _unitOfWork.Save();
+                        ClientName = refer.ClientName,
+                        Date = DateTime.Now,
+                        ReferText = refer.ReferText,
+                        Email = refer.Email,
+                        Phone = refer.Phone
+                    };
 
-                        return Json(new { success = true, message = "Список проверен." }, JsonRequestBehavior.AllowGet);
+                    var newRefer = _unitOfWork.Refers.Create(newReferModel);
 
-                    }
+                    var workerForRefer = freWorkers.FirstOrDefault(x => x.Type == (int) WorkerTypes.Operator) ??
+                                         freWorkers.FirstOrDefault(x => x.Type == (int) WorkerTypes.Manager) ??
+                                         freWorkers.FirstOrDefault(x => x.Type == (int) WorkerTypes.Manager);
 
-                    catch (Exception ex)
+                    var newQueue = new Queue()
                     {
-                        Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                        ModelState.AddModelError("", $"Произошла ошибка, обратитесь за помощью к администратору. {ex.Message}");
-                        return Json(new { success = false, errors = ModelState.Errors() }, JsonRequestBehavior.AllowGet);
-                    }
+                        WorkerId = workerForRefer.Id,
+                        ReferId = newRefer.Id,
+                        DateFrom = DateTime.Now,
+                        State = (int)QueueStates.InProcess
+                    };
+
+                    _unitOfWork.Queue.Create(newQueue);
+
+                    await _unitOfWork.SaveAsync();
+
+                    return Json(new { success = true, message = "Запрос создан и передан в обработку." }, JsonRequestBehavior.AllowGet);
+
+                }
+
+                catch (Exception ex)
+                {
+                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    ModelState.AddModelError("", $"Произошла ошибка, обратитесь за помощью к администратору. {ex.Message}");
+                    return Json(new { success = false, errors = ModelState.Errors() }, JsonRequestBehavior.AllowGet);
+                }
                 
             }
             catch (Exception ex)

@@ -10,7 +10,7 @@ namespace Tele.Infrastructure.Domain
     {
         IEnumerable<T> All();
 
-        void Create(T entity);
+        T Create(T entity);
 
         void Delete(T entity);
 

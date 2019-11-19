@@ -26,9 +26,9 @@ namespace Tele.BusinessLayer.Domain
             return _db.ToList();
         }
 
-        public void Create(T entity)
+        public T Create(T entity)
         {
-            _db.Add(entity);
+            return _db.Add(entity);
         }
 
         public void Update(T entity)
