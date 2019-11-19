@@ -41,9 +41,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutoMappingConfig\IAutoMapperTypeConfigurator.cs" />
-    <Compile Include="Business\IBookService.cs" />
+    <Compile Include="Business\IReferService.cs" />
     <Compile Include="Domain\IRepository.cs" />
     <Compile Include="Domain\IUnitOfWork.cs" />
+    <Compile Include="Enums\QueueStates.cs" />
+    <Compile Include="Enums\ReferStates.cs" />
+    <Compile Include="Enums\WorkerTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

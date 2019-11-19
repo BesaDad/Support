@@ -67,7 +67,7 @@ namespace Tele.App_Start
             NinjectConfigAutoMapper.ConfigureAutoMapper(kernel);
 
             kernel.Bind<IUnitOfWork>().To<UnitOfWork>().InRequestScope();
-            kernel.Bind<ITeleService>().To<TeleService>().InRequestScope();
+            kernel.Bind<IReferService>().To<ReferService>().InRequestScope();
         }        
     }
 }

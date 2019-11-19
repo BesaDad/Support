@@ -17,20 +17,21 @@ using TeleSharp.TL.Contacts;
 using TeleSharp.TL;
 using TLSharp.Core;
 using Books.Models;
+using Tele.Models;
 
 namespace Tele.Controllers
 {
     public class TeleController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ITeleService _teleService;
+        private readonly IReferService _teleService;
         private readonly TelegramClient _client;
 
         //private readonly int apiId = 773874;
         //private readonly string apiHash = "8a71d40e68df57548df4433b0eb7c1e3";
         //private readonly string phoneNumber = "77470914908";
 
-        public TeleController(IUnitOfWork unitOfWork, ITeleService teleService)
+        public TeleController(IUnitOfWork unitOfWork, IReferService teleService)
         {
             _unitOfWork = unitOfWork;
             _teleService = teleService;
@@ -113,6 +114,43 @@ namespace Tele.Controllers
                         return Json(new {success = false, errors = ModelState.Errors()}, JsonRequestBehavior.AllowGet);
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Соединение разорвано." }, JsonRequestBehavior.AllowGet);
+            }
+
+            return Json(new { success = false, message = "Соединение разорвано." }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> CreateRefer(ReferVM refer)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    return Json(new { success = false, errors = ModelState.Errors() }, JsonRequestBehavior.AllowGet);
+                }
+
+                
+                    try
+                    {
+                        //var workerForRefer = _unitOfWork.Workers.
+                       // _unitOfWork.Save();
+
+                        return Json(new { success = true, message = "Список проверен." }, JsonRequestBehavior.AllowGet);
+
+                    }
+
+                    catch (Exception ex)
+                    {
+                        Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        ModelState.AddModelError("", $"Произошла ошибка, обратитесь за помощью к администратору. {ex.Message}");
+                        return Json(new { success = false, errors = ModelState.Errors() }, JsonRequestBehavior.AllowGet);
+                    }
+                
             }
             catch (Exception ex)
             {

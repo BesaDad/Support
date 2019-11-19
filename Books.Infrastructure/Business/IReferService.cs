@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace Tele.Infrastructure.Business
 {
-    public interface ITeleService
+    public interface IReferService
     {
+        IEnumerable<Worker> GetFreeWorkers();
     }
 }
