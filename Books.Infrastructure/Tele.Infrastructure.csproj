@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="AutoMappingConfig\IAutoMapperTypeConfigurator.cs" />
     <Compile Include="Business\IReferService.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="Domain\IRepository.cs" />
     <Compile Include="Domain\IUnitOfWork.cs" />
     <Compile Include="Enums\QueueStates.cs" />

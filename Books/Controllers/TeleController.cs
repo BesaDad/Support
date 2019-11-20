@@ -4,6 +4,7 @@ using Tele.Infrastructure.Business;
 using Tele.Infrastructure.Domain;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using Tele.Utility;
 using System.Web;
 using System.Web.Mvc;
 using System.Net;
+using System.Threading;
 using System.Web.Helpers;
 using System.Web.Management;
 using TeleSharp.TL.Contacts;
@@ -57,7 +59,7 @@ namespace Tele.Controllers
                 
                 try
                 {
-                    var freWorkers = _referService.GetFreeWorkers();
+                    var freWorkers = _referService.GetFreeWorkers().ToList();
                     var newReferModel = new Refer()
                     {
                         ClientName = refer.ClientName,
@@ -69,9 +71,29 @@ namespace Tele.Controllers
 
                     var newRefer = _unitOfWork.Refers.Create(newReferModel);
 
-                    var workerForRefer = freWorkers.FirstOrDefault(x => x.Type == (int) WorkerTypes.Operator) ??
-                                         freWorkers.FirstOrDefault(x => x.Type == (int) WorkerTypes.Manager) ??
-                                         freWorkers.FirstOrDefault(x => x.Type == (int) WorkerTypes.Manager);
+                    Worker workerForRefer = freWorkers.FirstOrDefault(x => x.Type == (int) WorkerTypes.Operator);
+
+                    if(workerForRefer == null)
+                    {
+                        int num = 0;
+                        var timeM = int.Parse(ConfigurationSettings.AppSettings["Tm"]);
+                        var timeD = int.Parse(ConfigurationSettings.AppSettings["Td"]);
+                        
+                        //Назначаем задание оператору
+                        TimerCallback tmCallbackOper = new TimerCallback((s)=> 
+                            workerForRefer = newRefer.Sate == (int)ReferStates.New ? freWorkers.FirstOrDefault(x => x.Type == (int)WorkerTypes.Manager):null);
+
+                        Timer timerOper = new Timer(tmCallbackOper, num, 0, timeM);
+
+                        //Назначаем задание директору
+                        if (newRefer.Sate == (int)ReferStates.New && workerForRefer == null)
+                        {
+                            TimerCallback tm = new TimerCallback((s) =>
+                                workerForRefer = newRefer.Sate == (int)ReferStates.New ? freWorkers.FirstOrDefault(x => x.Type == (int)WorkerTypes.Director) : null);
+
+                            Timer timerMan = new Timer(tm, num, 0,  timeD - timeM);
+                        }
+                    }
 
                     var newQueue = new Queue()
                     {
@@ -103,6 +125,21 @@ namespace Tele.Controllers
             }
 
             return Json(new { success = false, message = "Соединение разорвано." }, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public async Task<JsonResult> CancelRefer(int referId)
+        {
+            try
+            {
+                _unitOfWork.
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                ModelState.AddModelError("", $"Произошла ошибка, обратитесь за помощью к администратору. {ex.Message}");
+                return Json(new { success = false, errors = ModelState.Errors() }, JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }
