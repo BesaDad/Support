@@ -21,6 +21,6 @@ namespace Support.Domain.Models
         [Column("type")]
         public int Type { get; set; }
 
-        public ICollection<Queue> Queue { get; set; }
+        public virtual ICollection<Queue> Queue { get; set; }
     }
 }

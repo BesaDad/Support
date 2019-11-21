@@ -32,10 +32,8 @@ namespace Support.Domain.Models
         [Column("state")]
         public int State { get; set; }
 
-        //
-        public Worker  Worker { get; set; }
+        public virtual Worker  Worker { get; set; }
 
-        //
-        public Refer Refer { get; set; }
+        public virtual Refer Refer { get; set; }
     }
 }

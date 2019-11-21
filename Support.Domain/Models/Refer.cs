@@ -34,6 +34,6 @@ namespace Support.Domain.Models
         [Column("phone")]
         public int Phone { get; set; }
 
-        public ICollection<Queue> Queue { get; set; }
+        public virtual ICollection<Queue> Queue { get; set; }
     }
 }

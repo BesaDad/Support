@@ -46,7 +46,7 @@ namespace Support.BusinessLayer.Domain
 
         public IEnumerable<T> Filter(Func<T, bool> predicate)
         {
-            return _db.AsNoTracking().Where(predicate).ToList();
+            return _db.Where(predicate).ToList();
         }
     }
 }

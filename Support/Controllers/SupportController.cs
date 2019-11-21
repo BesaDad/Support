@@ -5,6 +5,7 @@ using Support.Infrastructure.Domain;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -62,6 +63,7 @@ namespace Support.Controllers
                 };
 
                 _unitOfWork.Refers.Create(newRefer);
+
                 await _unitOfWork.SaveAsync();
 
                 if (newRefer.Id>0)
@@ -75,7 +77,7 @@ namespace Support.Controllers
 
                         await Task.Delay(timeM).ContinueWith((s) =>
                                 workerForRefer = newRefer.State == (int)ReferStates.New
-                                    ? freWorkers.FirstOrDefault(x => x.Type == (int)WorkerTypes.Manager)
+                                    ? _referService.GetFreeWorkers().FirstOrDefault(x => x.Type == (int)WorkerTypes.Manager)
                                     : null);
 
                         //Назначаем задание директору
@@ -83,7 +85,7 @@ namespace Support.Controllers
                         {
                             await Task.Delay(timeD).ContinueWith((s) =>
                                     workerForRefer = newRefer.State == (int)ReferStates.New
-                                        ? freWorkers.FirstOrDefault(x => x.Type == (int)WorkerTypes.Manager)
+                                        ? _referService.GetFreeWorkers().FirstOrDefault(x => x.Type == (int)WorkerTypes.Director)
                                         : null);
                         }
                     }
@@ -143,14 +145,14 @@ namespace Support.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetNewRefers()
+        public ActionResult NewRefers()
         {
             var newRefers = _unitOfWork.Refers.Filter(x => x.State == (int) ReferStates.New)?.ToList();
-            return PartialView(newRefers ?? new List<Refer>());
+            return PartialView("_NewRefers", newRefers ?? new List<Refer>());
         }
 
         [HttpGet]
-        public ActionResult GetDoneRefers()
+        public ActionResult DoneRefers()
         {
             var refersDone = _unitOfWork.Refers.Filter(x => x.State == (int)ReferStates.Done)?.ToList();
             var doneRefers = new List<ReferDone>();
@@ -159,7 +161,8 @@ namespace Support.Controllers
                 foreach (var refDone in refersDone)
                 {
                     var queueDone = _unitOfWork.Queue
-                        .Filter(x => x.ReferId == refDone.Id && x.State == (int) ReferStates.Done).FirstOrDefault();
+                        .Filter(x => x.ReferId == refDone.Id && x.State == (int) ReferStates.Done)
+                        .AsQueryable().Include(x=>x.Worker).FirstOrDefault();
 
                     doneRefers.Add(new ReferDone()
                     {
@@ -173,11 +176,11 @@ namespace Support.Controllers
                 }
             }
             
-            return PartialView(doneRefers ?? new List<ReferDone>());
+            return PartialView("_DoneRefers", doneRefers ?? new List<ReferDone>());
         }
 
         [HttpGet]
-        public ActionResult GetWorkers()
+        public ActionResult Workers()
         {
             var workers = _unitOfWork.Workers.All();
             var workersVM = new List<WorkerVM>();
@@ -191,7 +194,13 @@ namespace Support.Controllers
                 });
             }
 
-            return PartialView(workersVM);
+            return PartialView("_Workers", workersVM);
+        }
+
+        [HttpGet]
+        public ActionResult Statistic()
+        {
+            return View();
         }
     }
 }
