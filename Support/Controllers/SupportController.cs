@@ -148,7 +148,25 @@ namespace Support.Controllers
         public ActionResult NewRefers()
         {
             var newRefers = _unitOfWork.Refers.Filter(x => x.State == (int) ReferStates.New)?.ToList();
-            return PartialView("_NewRefers", newRefers ?? new List<Refer>());
+            var newRefersVM = new List<ReferVM>();
+            if (newRefers.Any())
+            {
+                foreach (var newRefer in newRefers)
+                {
+                    newRefersVM.Add(new ReferVM()
+                    {
+                        Id = newRefer.Id,
+                        ClientName = newRefer.ClientName,
+                        Date = newRefer.Date,
+                        ReferText = newRefer.ReferText,
+                        Email = newRefer.Email,
+                        Phone = newRefer.Phone,
+                        State = newRefer.State
+                    });
+                }
+            }
+
+            return PartialView("_NewRefers", newRefersVM ?? new List<ReferVM>());
         }
 
         [HttpGet]
@@ -186,11 +204,14 @@ namespace Support.Controllers
             var workersVM = new List<WorkerVM>();
             foreach (var worker in workers)
             {
+                var isBusy =
+                    _unitOfWork.Queue.Filter(x => x.WorkerId == worker.Id && x.State == (int) QueueStates.InProcess).Any();
                 workersVM.Add(new WorkerVM()
                 {
                     Id = worker.Id,
                     Name = worker.Name,
-                    Type = worker.Type
+                    Type = worker.Type,
+                    Status = isBusy ? "Занят" : "Свободен"
                 });
             }
 

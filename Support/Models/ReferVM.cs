@@ -12,6 +12,7 @@ namespace Support.Models
         public string ReferText { get; set; }
         public string Email { get; set; }
         public int Phone { get; set; }
+        public int State { get; set; }
         public DateTime Date { get; set; }
     }
 }

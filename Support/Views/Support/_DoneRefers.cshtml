@@ -1,0 +1,40 @@
+﻿@model IEnumerable<Support.Models.ReferDone>
+
+<h3>
+    Обработанные заявки
+</h3>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ClientName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.WorkerName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ReferDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SpentTime)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ClientName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.WorkerName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ReferDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SpentTime)
+        </td>
+    </tr>
+}
+
+</table>

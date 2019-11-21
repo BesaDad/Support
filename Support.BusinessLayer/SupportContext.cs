@@ -20,6 +20,5 @@ namespace Support.BusinessLayer
         public DbSet<Worker> Workers { get; set; }
         public DbSet<Refer> Refers { get; set; }
         public DbSet<Queue> Queue { get; set; }
-
     }
 }

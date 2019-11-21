@@ -17,16 +17,16 @@
 </script>
 <div class="modal-body">
     <div class="well">
-
-            <div class="row">
-                
-                <div class="col-md-10">
-                    @Html.Action("Workers")
+        <div class="row">
+            <div class="col-md-10">
+                @Html.Action("Workers")
             </div>
-            <div class="buttons-wrap">
-                <button type="submit" class="btn btn-primary">Отправить</button>
-                <button id="btnCancel" type="button" class="btn" data-dismiss="modal">Отменить</button>
+            <div class="col-md-10">
+                @Html.Action("NewRefers")
             </div>
-
+            <div class="col-md-10">
+                @Html.Action("DoneRefers")
+            </div>
+        </div>
     </div>
 </div>
