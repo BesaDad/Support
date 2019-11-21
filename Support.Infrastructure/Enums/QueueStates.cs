@@ -10,6 +10,7 @@ namespace Support.Infrastructure.Enums
     {
         InProcess,
         Done,
-        Transferred
+        Transferred,
+        Canceled
     }
 }

@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <script type="text/javascript">
-    function onSuccessContactsList(data) {
+    function onSuccessCreateRefer(data) {
         if (data.success) {
             showAlertMessage("#successAlert", data.message);
         } else {
@@ -17,7 +17,7 @@
 </script>
 <div class="modal-body">
     <div class="well">
-        @using (Ajax.BeginForm("CreateRefer", "Support", new { area = "" }, new AjaxOptions { OnSuccess = "onSuccessContactsList", OnFailure = "onFailureFormDefault", HttpMethod = "POST" },
+        @using (Ajax.BeginForm("CreateRefer", "Support", new { area = "" }, new AjaxOptions { OnSuccess = "onSuccessCreateRefer", OnFailure = "onFailureFormDefault", HttpMethod = "POST" },
                         new { id = "ContactsListFormForm", autocomplete = "off", @class = "form-horizontal" }))
         {
             @Html.AntiForgeryToken()

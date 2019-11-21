@@ -23,7 +23,7 @@ namespace Support.Domain.Models
         public DateTime Date { get; set; }
 
         [Column("state")]
-        public int Sate { get; set; }
+        public int State { get; set; }
 
         [Column("refer_text")]
         public string ReferText { get; set; }

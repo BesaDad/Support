@@ -39,7 +39,6 @@ namespace Support.Controllers
         }
 
         [HttpPost]
-        [Obsolete]
         public async Task<JsonResult> CreateRefer(ReferVM refer)
         {
             if (!ModelState.IsValid)
@@ -75,15 +74,15 @@ namespace Support.Controllers
                         var timeD = int.Parse(ConfigurationSettings.AppSettings["Td"]);
 
                         await Task.Delay(timeM).ContinueWith((s) =>
-                                workerForRefer = newRefer.Sate == (int)ReferStates.New
+                                workerForRefer = newRefer.State == (int)ReferStates.New
                                     ? freWorkers.FirstOrDefault(x => x.Type == (int)WorkerTypes.Manager)
                                     : null);
 
                         //Назначаем задание директору
-                        if (newRefer.Sate == (int)ReferStates.New && workerForRefer == null)
+                        if (newRefer.State == (int)ReferStates.New && workerForRefer == null)
                         {
                             await Task.Delay(timeD).ContinueWith((s) =>
-                                    workerForRefer = newRefer.Sate == (int)ReferStates.New
+                                    workerForRefer = newRefer.State == (int)ReferStates.New
                                         ? freWorkers.FirstOrDefault(x => x.Type == (int)WorkerTypes.Manager)
                                         : null);
                         }
@@ -116,18 +115,83 @@ namespace Support.Controllers
             }
         }
 
-        //public async Task<JsonResult> CancelRefer(int referId)
-        //{
-        //    try
-        //    {
-        //        _unitOfWork.
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Response.StatusCode = (int)HttpStatusCode.BadRequest;
-        //        ModelState.AddModelError("", $"Произошла ошибка, обратитесь за помощью к администратору. {ex.Message}");
-        //        return Json(new { success = false, errors = ModelState.Errors() }, JsonRequestBehavior.AllowGet);
-        //    }
-        //}
+        [HttpPost]
+        public async Task<JsonResult> CancelRefer(int referId)
+        {
+            try
+            {
+                var queueOnCancel =_unitOfWork.Queue
+                    .Filter(x => x.ReferId == referId && x.State == (int) QueueStates.InProcess).FirstOrDefault();
+                if (queueOnCancel != null)
+                    queueOnCancel.State = (int) QueueStates.Canceled;
+
+                var refer = _unitOfWork.Refers.Filter(x => x.Id == referId).FirstOrDefault();
+                if (refer != null)
+                    refer.State = (int) ReferStates.Canceled;
+                await _unitOfWork.SaveAsync();
+
+                return refer != null
+                    ? Json(new {success = true, message = "Запрос отменен."}, JsonRequestBehavior.AllowGet)
+                    : Json(new {success = false, message = "Запрос не найден."}, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                ModelState.AddModelError("", $"Произошла ошибка, обратитесь за помощью к администратору. {ex.Message}");
+                return Json(new { success = false, errors = ModelState.Errors() }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult GetNewRefers()
+        {
+            var newRefers = _unitOfWork.Refers.Filter(x => x.State == (int) ReferStates.New)?.ToList();
+            return PartialView(newRefers ?? new List<Refer>());
+        }
+
+        [HttpGet]
+        public ActionResult GetDoneRefers()
+        {
+            var refersDone = _unitOfWork.Refers.Filter(x => x.State == (int)ReferStates.Done)?.ToList();
+            var doneRefers = new List<ReferDone>();
+            if (refersDone.Any())
+            {
+                foreach (var refDone in refersDone)
+                {
+                    var queueDone = _unitOfWork.Queue
+                        .Filter(x => x.ReferId == refDone.Id && x.State == (int) ReferStates.Done).FirstOrDefault();
+
+                    doneRefers.Add(new ReferDone()
+                    {
+                        ReferId = refDone.Id,
+                        WorkerId = queueDone.WorkerId,
+                        WorkerName = queueDone.Worker.Name,
+                        ClientName = refDone.ClientName,
+                        ReferDate = refDone.Date,
+                        SpentTime = ((TimeSpan)(queueDone.DateTo - queueDone.DateFrom)).ToString(@"hh\:mm\:ss"),
+                    });
+                }
+            }
+            
+            return PartialView(doneRefers ?? new List<ReferDone>());
+        }
+
+        [HttpGet]
+        public ActionResult GetWorkers()
+        {
+            var workers = _unitOfWork.Workers.All();
+            var workersVM = new List<WorkerVM>();
+            foreach (var worker in workers)
+            {
+                workersVM.Add(new WorkerVM()
+                {
+                    Id = worker.Id,
+                    Name = worker.Name,
+                    Type = worker.Type
+                });
+            }
+
+            return PartialView(workersVM);
+        }
     }
 }
