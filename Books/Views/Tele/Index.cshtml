@@ -1,4 +1,4 @@
-﻿@model Books.Models.UserApi
+﻿@model Tele.Models.ReferVM
 @{
     ViewBag.Title = "Получение контактов";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -17,7 +17,7 @@
 </script>
 <div class="modal-body">
     <div class="well">
-        @using (Ajax.BeginForm("ContactsList", "Tele", new { area = "" }, new AjaxOptions { OnSuccess = "onSuccessContactsList", OnFailure = "onFailureFormDefault", HttpMethod = "POST" },
+        @using (Ajax.BeginForm("CreateRefer", "Tele", new { area = "" }, new AjaxOptions { OnSuccess = "onSuccessContactsList", OnFailure = "onFailureFormDefault", HttpMethod = "POST" },
                         new { id = "ContactsListFormForm", autocomplete = "off", @class = "form-horizontal" }))
         {
             @Html.AntiForgeryToken()
@@ -27,27 +27,34 @@
                     </div>*@
                 <div class="col-md-10">
                     <div class="form-group">
-                        @Html.LabelFor(model => model.ApiId, new { @class = "control-label col-md-3" })
+                        @Html.LabelFor(model => model.ClientName, new { @class = "control-label col-md-3" })
                         <div class="col-md-7">
-                            @Html.TextBoxFor(model => model.ApiId, new { @class = "form-control recize-none"})
-                            @Html.ValidationMessageFor(model => model.ApiId, "", new { @class = "text-danger" })
+                            @Html.TextBoxFor(model => model.ClientName, new { @class = "form-control recize-none" })
+                            @Html.ValidationMessageFor(model => model.ClientName, "", new { @class = "text-danger" })
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(model => model.ApiHash, new { @class = "control-label col-md-3" })
+                        @Html.LabelFor(model => model.Email, new { @class = "control-label col-md-3" })
                         <div class="col-md-2">
-                            @Html.TextBoxFor(model => model.ApiHash, new { @class = "form-control"})
-                            @Html.ValidationMessageFor(model => model.ApiHash, "", new { @class = "text-danger" })
+                            @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.LabelFor(model => model.PhoneNumber, new { @class = "control-label col-md-3" })
+                        @Html.LabelFor(model => model.Phone, new { @class = "control-label col-md-3" })
                         <div class="col-md-7">
-                            @Html.TextBoxFor(model => model.PhoneNumber, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+                            @Html.TextBoxFor(model => model.Phone, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
                         </div>
                     </div>
-                   </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ReferText, new { @class = "control-label col-md-3" })
+                        <div class="col-md-7">
+                            @Html.TextBoxFor(model => model.ReferText, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.ReferText, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="buttons-wrap">
                 <button type="submit" class="btn btn-primary">Отправить</button>

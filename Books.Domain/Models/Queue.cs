@@ -16,9 +16,11 @@ namespace Tele.Domain.Models
         public int Id { get; set; }
 
         [Column("refer_id")]
+        [ForeignKey("Refer")]
         public int ReferId { get; set; }
 
         [Column("worker_id")]
+        [ForeignKey("Worker")]
         public int WorkerId { get; set; }
 
         [Column("date_from")]
@@ -30,10 +32,10 @@ namespace Tele.Domain.Models
         [Column("state")]
         public int State { get; set; }
 
-        [ForeignKey("WorkerId")]
+        //
         public Worker  Worker { get; set; }
 
-        [ForeignKey("ReferId")]
+        //
         public Refer Refer { get; set; }
     }
 }

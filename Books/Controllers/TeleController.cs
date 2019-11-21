@@ -19,6 +19,7 @@ using TeleSharp.TL.Contacts;
 using TeleSharp.TL;
 using TLSharp.Core;
 using Books.Models;
+using Tele.BusinessLayer;
 using Tele.Models;
 using Tele.Infrastructure.Enums;
 
@@ -46,93 +47,76 @@ namespace Tele.Controllers
         }
 
         [HttpPost]
+        [Obsolete]
         public async Task<JsonResult> CreateRefer(ReferVM refer)
         {
+            if (!ModelState.IsValid)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new { success = false, errors = ModelState.Errors() }, JsonRequestBehavior.AllowGet);
+            }
+                
             try
             {
-                if (!ModelState.IsValid)
+                var freWorkers = _referService.GetFreeWorkers().ToList();
+                Refer newRefer;
+
+                newRefer = new Refer()
                 {
-                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    return Json(new { success = false, errors = ModelState.Errors() }, JsonRequestBehavior.AllowGet);
-                }
 
-                
-                try
+                    ClientName = refer.ClientName,
+                    Date = DateTime.Now,
+                    ReferText = refer.ReferText,
+                    Email = refer.Email,
+                    Phone = refer.Phone
+                };
+
+                _unitOfWork.Refers.Create(newRefer);
+                await _unitOfWork.SaveAsync();
+
+                if (newRefer.Id>0)
                 {
-                    var freWorkers = _referService.GetFreeWorkers().ToList();
-                    var newReferModel = new Refer()
-                    {
-                        ClientName = refer.ClientName,
-                        Date = DateTime.Now,
-                        ReferText = refer.ReferText,
-                        Email = refer.Email,
-                        Phone = refer.Phone
-                    };
+                    Worker workerForRefer = freWorkers.FirstOrDefault(x => x.Type == (int)WorkerTypes.Operator);
 
-                    var newRefer = _unitOfWork.Refers.Create(newReferModel);
-
-                    Worker workerForRefer = freWorkers.FirstOrDefault(x => x.Type == (int) WorkerTypes.Operator);
-
-                    if(workerForRefer == null)
+                    if (workerForRefer == null)
                     {
                         int num = 0;
                         var timeM = int.Parse(ConfigurationSettings.AppSettings["Tm"]);
                         var timeD = int.Parse(ConfigurationSettings.AppSettings["Td"]);
-                        
-                        //Назначаем задание оператору
-                        TimerCallback tmCallbackOper = new TimerCallback((s)=> 
-                            workerForRefer = newRefer.Sate == (int)ReferStates.New ? freWorkers.FirstOrDefault(x => x.Type == (int)WorkerTypes.Manager):null);
 
-                        Timer timerOper = new Timer(tmCallbackOper, num, 0, timeM);
+                        await Task.Delay(timeM).ContinueWith((s) =>
+                                workerForRefer = newRefer.Sate == (int)ReferStates.New
+                                    ? freWorkers.FirstOrDefault(x => x.Type == (int)WorkerTypes.Manager)
+                                    : null);
 
                         //Назначаем задание директору
                         if (newRefer.Sate == (int)ReferStates.New && workerForRefer == null)
                         {
-                            TimerCallback tm = new TimerCallback((s) =>
-                                workerForRefer = newRefer.Sate == (int)ReferStates.New ? freWorkers.FirstOrDefault(x => x.Type == (int)WorkerTypes.Director) : null);
-
-                            Timer timerMan = new Timer(tm, num, 0,  timeD - timeM);
+                            await Task.Delay(timeD).ContinueWith((s) =>
+                                    workerForRefer = newRefer.Sate == (int)ReferStates.New
+                                        ? freWorkers.FirstOrDefault(x => x.Type == (int)WorkerTypes.Manager)
+                                        : null);
                         }
                     }
 
-                    var newQueue = new Queue()
+                    if (workerForRefer != null)
                     {
-                        WorkerId = workerForRefer.Id,
-                        ReferId = newRefer.Id,
-                        DateFrom = DateTime.Now,
-                        State = (int)QueueStates.InProcess
-                    };
+                        var newQueue = new Queue()
+                        {
+                            WorkerId = workerForRefer.Id,
+                            ReferId = newRefer.Id,
+                            DateFrom = DateTime.Now,
+                            State = (int) QueueStates.InProcess
+                        };
+                        _unitOfWork.Queue.Create(newQueue);
 
-                    _unitOfWork.Queue.Create(newQueue);
+                        await _unitOfWork.SaveAsync();
 
-                    await _unitOfWork.SaveAsync();
-
-                    return Json(new { success = true, message = "Запрос создан и передан в обработку." }, JsonRequestBehavior.AllowGet);
-
+                        return Json(new {success = true, message = "Запрос создан и передан в обработку."}, JsonRequestBehavior.AllowGet);
+                    }
+                    return Json(new { success = false, message = "Запрос создан и ожидает передачи в обработку." }, JsonRequestBehavior.AllowGet);
                 }
-
-                catch (Exception ex)
-                {
-                    Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                    ModelState.AddModelError("", $"Произошла ошибка, обратитесь за помощью к администратору. {ex.Message}");
-                    return Json(new { success = false, errors = ModelState.Errors() }, JsonRequestBehavior.AllowGet);
-                }
-                
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "Соединение разорвано." }, JsonRequestBehavior.AllowGet);
-            }
-
-            return Json(new { success = false, message = "Соединение разорвано." }, JsonRequestBehavior.AllowGet);
-
-        }
-
-        public async Task<JsonResult> CancelRefer(int referId)
-        {
-            try
-            {
-                _unitOfWork.
+                return Json(new { success = false, message = "Запрос не был создан, обратитесь за помощью к администратору" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -141,5 +125,19 @@ namespace Tele.Controllers
                 return Json(new { success = false, errors = ModelState.Errors() }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        //public async Task<JsonResult> CancelRefer(int referId)
+        //{
+        //    try
+        //    {
+        //        _unitOfWork.
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Response.StatusCode = (int)HttpStatusCode.BadRequest;
+        //        ModelState.AddModelError("", $"Произошла ошибка, обратитесь за помощью к администратору. {ex.Message}");
+        //        return Json(new { success = false, errors = ModelState.Errors() }, JsonRequestBehavior.AllowGet);
+        //    }
+        //}
     }
 }

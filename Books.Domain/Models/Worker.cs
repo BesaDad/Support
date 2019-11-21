@@ -11,6 +11,7 @@ namespace Tele.Domain.Models
     [Table("Workers")]
     public class Worker
     {
+        [Key]
         [Column("id")]
         public int Id { get; set; }
 

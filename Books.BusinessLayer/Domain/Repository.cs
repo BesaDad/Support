@@ -28,7 +28,10 @@ namespace Tele.BusinessLayer.Domain
 
         public T Create(T entity)
         {
-            return _db.Add(entity);
+            
+            var newT = _db.Add(entity);
+           // _context.Entry(entity).State = EntityState.Added;
+            return newT;
         }
 
         public void Update(T entity)

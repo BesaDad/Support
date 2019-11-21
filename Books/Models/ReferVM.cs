@@ -11,6 +11,6 @@ namespace Tele.Models
         public string ClientName { get; set; }
         public string ReferText { get; set; }
         public string Email { get; set; }
-        public string Phone { get; set; }
+        public int Phone { get; set; }
     }
 }

@@ -56,7 +56,6 @@
     <Compile Include="BookContext.cs" />
     <Compile Include="Domain\Repository.cs" />
     <Compile Include="Domain\UnitOfWork.cs" />
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ReferService.cs" />
   </ItemGroup>

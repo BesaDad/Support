@@ -14,6 +14,7 @@ namespace Tele.BusinessLayer
         public TeleContext()
             : base("TeleConnectionString")
         {
+            Database.SetInitializer<TeleContext>(null);
         }
         
         public DbSet<Worker> Workers { get; set; }
