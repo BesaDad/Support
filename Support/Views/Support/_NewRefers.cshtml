@@ -40,6 +40,9 @@
         <td>
             @Html.DisplayFor(modelItem => item.Date)
         </td>
+        <td>
+            @Ajax.ActionLink("Отменить заявку", "CancelRefer", "Support", new { referId = item.Id }, new AjaxOptions { HttpMethod = "POST",  OnSuccess = "onSuccessCancelRefer", OnFailure = "onFailureFormDefault" })
+        </td>
     </tr>
 }
 

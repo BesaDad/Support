@@ -43,3 +43,7 @@ textarea {
 .glyphicon-trash {
     padding-left: 30%;
 }
+
+.navbar-inverse .navbar-brand {
+    color: white;
+}

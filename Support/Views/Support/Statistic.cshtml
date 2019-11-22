@@ -4,9 +4,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <script type="text/javascript">
-    function onSuccessCreateRefer(data) {
+    function onSuccessCancelRefer(data) {
         if (data.success) {
             showAlertMessage("#successAlert", data.message);
+            window.location.reload();
         } else {
             showAlertMessage("#errorAlert", data.message);
         }

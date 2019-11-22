@@ -34,7 +34,7 @@ namespace Support.Controllers
             _referService = referService;
         }
 
-        public ActionResult Index()
+        public ActionResult CreateRefer()
         {
             return View();
         }
@@ -50,8 +50,6 @@ namespace Support.Controllers
                 
             try
             {
-                var freWorkers = _referService.GetFreeWorkers().ToList();
-
                 var newRefer = new Refer()
                 {
 
@@ -68,7 +66,7 @@ namespace Support.Controllers
 
                 if (newRefer.Id>0)
                 {
-                    Worker workerForRefer = freWorkers.FirstOrDefault(x => x.Type == (int)WorkerTypes.Operator);
+                    Worker workerForRefer = _referService.GetFreeWorkers().FirstOrDefault(x => x.Type == (int)WorkerTypes.Operator);
 
                     if (workerForRefer == null)
                     {
@@ -77,7 +75,9 @@ namespace Support.Controllers
 
                         await Task.Delay(timeM).ContinueWith((s) =>
                                 workerForRefer = newRefer.State == (int)ReferStates.New
-                                    ? _referService.GetFreeWorkers().FirstOrDefault(x => x.Type == (int)WorkerTypes.Manager)
+                                    ? _referService.GetFreeWorkers()
+                                        .Where(x => x.Type == (int)WorkerTypes.Manager || x.Type == (int)WorkerTypes.Operator).OrderBy(x=>x.Type)
+                                        .FirstOrDefault()
                                     : null);
 
                         //Назначаем задание директору
@@ -85,7 +85,8 @@ namespace Support.Controllers
                         {
                             await Task.Delay(timeD).ContinueWith((s) =>
                                     workerForRefer = newRefer.State == (int)ReferStates.New
-                                        ? _referService.GetFreeWorkers().FirstOrDefault(x => x.Type == (int)WorkerTypes.Director)
+                                        ? _referService.GetFreeWorkers().OrderBy(x => x.Type)
+                                            .FirstOrDefault()
                                         : null);
                         }
                     }

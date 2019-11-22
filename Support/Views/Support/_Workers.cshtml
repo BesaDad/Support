@@ -1,4 +1,6 @@
-﻿@model IEnumerable<Support.Models.WorkerVM>
+﻿@using Support.Infrastructure.Enums
+@using Support.Utility
+@model IEnumerable<Support.Models.WorkerVM>
 
 <h3>
     Сотрудники
@@ -20,7 +22,7 @@
             @Html.DisplayFor(modelItem => item.Name)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Status)
+            @Html.DisplayFor(modelItem => item.TypeDescription)
         </td>
     </tr>
 }

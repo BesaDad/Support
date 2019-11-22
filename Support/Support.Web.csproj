@@ -296,7 +296,7 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Views\Support\Index.cshtml" />
+    <Content Include="Views\Support\CreateRefer.cshtml" />
     <Content Include="Views\Support\Statistic.cshtml" />
     <Content Include="Views\Support\_Workers.cshtml" />
     <Content Include="Views\Support\_NewRefers.cshtml" />
