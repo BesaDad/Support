@@ -22,7 +22,7 @@ namespace Support.BusinessLayer.Services
 
         public IEnumerable<Worker> GetFreeWorkers()
         {
-             var bisyWorkersId = _unitOfWork.Queue.Filter(x => x.State == (int) QueueStates.InProcess)
+             var bisyWorkersId = _unitOfWork.Queue.Filter(x => x.State == (int) ReferStates.InProcess)
                 .Select(x => x.WorkerId).Distinct();
 
             return _unitOfWork.Workers.Filter(x => !bisyWorkersId.Contains(x.Id));

@@ -98,7 +98,7 @@ namespace Support.Controllers
                             WorkerId = workerForRefer.Id,
                             ReferId = newRefer.Id,
                             DateFrom = DateTime.Now,
-                            State = (int) QueueStates.InProcess
+                            State = (int) ReferStates.InProcess
                         };
                         _unitOfWork.Queue.Create(newQueue);
 
@@ -119,14 +119,86 @@ namespace Support.Controllers
         }
 
         [HttpPost]
+        public async Task<JsonResult> ChangeReferState(int referId, int state, int queueId)
+        {
+            if(queueId != (int)ReferStates.Done && queueId != (int)ReferStates.Canceled)
+            { Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new { success = false, message = "Некорректный статус." }, JsonRequestBehavior.AllowGet);
+            }
+
+            try
+            {
+                var stateText = "";
+                var refer = _unitOfWork.Refers.FindById(referId);
+                var queue = _unitOfWork.Queue.FindById(queueId);
+
+                if (state == (int)ReferStates.Done)
+                {
+                    queue.State = state;
+                    refer.State = (int)ReferStates.Done;
+                    stateText = ReferStates.Done.GetDescription();                
+                }
+
+                queue.State = state;
+                refer.State = (int)ReferStates.Canceled;
+                stateText = ReferStates.Canceled.GetDescription();
+
+                await _unitOfWork.SaveAsync();
+                return Json(new { success = true, message = $"Статус запроса изменен на \"{stateText}\"." }, JsonRequestBehavior.AllowGet);           
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                ModelState.AddModelError("", $"Произошла ошибка, обратитесь за помощью к администратору. {ex.Message}");
+                return Json(new { success = false, errors = ModelState.Errors() }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> TransferRefer(int referId, int queueId, int workerId)
+        {
+            if (queueId != (int)ReferStates.Transferred)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json(new { success = false, message = "Некорректный статус." }, JsonRequestBehavior.AllowGet);
+            }
+
+            try
+            {
+                var queue = _unitOfWork.Queue.FindById(queueId);
+                queue.State = (int)ReferStates.Transferred;
+                var worker = _unitOfWork.Workers.FindById(workerId);
+
+
+                var newQueue = new Queue()
+                {
+                    WorkerId = workerId,
+                    ReferId = referId,
+                    DateFrom = DateTime.Now,
+                    State = (int)ReferStates.InProcess
+                };
+                _unitOfWork.Queue.Create(newQueue);
+
+                await _unitOfWork.SaveAsync();
+                return Json(new { success = true, message = $"Запрос передан сотруднику \"{worker.Name}\"." }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                ModelState.AddModelError("", $"Произошла ошибка, обратитесь за помощью к администратору. {ex.Message}");
+                return Json(new { success = false, errors = ModelState.Errors() }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
         public async Task<JsonResult> CancelRefer(int referId)
         {
             try
             {
                 var queueOnCancel =_unitOfWork.Queue
-                    .Filter(x => x.ReferId == referId && x.State == (int) QueueStates.InProcess).FirstOrDefault();
+                    .Filter(x => x.ReferId == referId && x.State == (int)ReferStates.InProcess).FirstOrDefault();
                 if (queueOnCancel != null)
-                    queueOnCancel.State = (int) QueueStates.Canceled;
+                    queueOnCancel.State = (int)ReferStates.Canceled;
 
                 var refer = _unitOfWork.Refers.Filter(x => x.Id == referId).FirstOrDefault();
                 if (refer != null)
@@ -206,7 +278,7 @@ namespace Support.Controllers
             foreach (var worker in workers)
             {
                 var isBusy =
-                    _unitOfWork.Queue.Filter(x => x.WorkerId == worker.Id && x.State == (int) QueueStates.InProcess).Any();
+                    _unitOfWork.Queue.Filter(x => x.WorkerId == worker.Id && x.State == (int)ReferStates.InProcess).Any();
                 workersVM.Add(new WorkerVM()
                 {
                     Id = worker.Id,

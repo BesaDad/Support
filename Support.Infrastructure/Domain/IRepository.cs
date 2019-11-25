@@ -17,5 +17,7 @@ namespace Support.Infrastructure.Domain
         void Update(T entity);
 
         IEnumerable<T> Filter(Func<T, bool> predicate);
+
+        T FindById(int id);
     }
 }

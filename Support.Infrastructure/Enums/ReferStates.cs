@@ -11,6 +11,10 @@ namespace Support.Infrastructure.Enums
     {
         [Description("Новый")]
         New,
+        [Description("В процессе")]
+        InProcess,
+        [Description("Передан")]
+        Transferred,
         [Description("Обработан")]
         Done,
         [Description("Отменен")]

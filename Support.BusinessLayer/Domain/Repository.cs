@@ -48,5 +48,10 @@ namespace Support.BusinessLayer.Domain
         {
             return _db.Where(predicate).ToList();
         }
+
+        public T FindById(int id)
+        {
+            return _db.Find(id);
+        }
     }
 }
