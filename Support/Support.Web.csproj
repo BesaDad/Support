@@ -256,6 +256,7 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="App_Code\GlyphIcon.cshtml" />
+    <Content Include="Комментарии.txt" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
@@ -302,6 +303,7 @@
     <Content Include="Views\Support\_NewRefers.cshtml" />
     <Content Include="Views\Support\_DoneRefers.cshtml" />
     <Content Include="Views\Support\_CreateEditWorker.cshtml" />
+    <Content Include="Комментарии.pdf" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
