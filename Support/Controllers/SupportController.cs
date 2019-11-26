@@ -50,6 +50,7 @@ namespace Support.Controllers
                 
             try
             {
+                //Создаем новое обращение
                 var newRefer = new Refer()
                 {
 
@@ -60,19 +61,22 @@ namespace Support.Controllers
                     Phone = refer.Phone
                 };
 
-                _unitOfWork.Refers.Create(newRefer);
+                newRefer = _unitOfWork.Refers.Create(newRefer);
 
                 await _unitOfWork.SaveAsync();
 
                 if (newRefer.Id>0)
                 {
+                    //Находим свободных операторов
                     Worker workerForRefer = _referService.GetFreeWorkers().FirstOrDefault(x => x.Type == (int)WorkerTypes.Operator);
 
+                    //Если нет свободных операторов
                     if (workerForRefer == null)
                     {
                         var timeM = int.Parse(ConfigurationSettings.AppSettings["Tm"]);
                         var timeD = int.Parse(ConfigurationSettings.AppSettings["Td"]);
 
+                        //Если нет свободных операторов, то ждем их, иначе передаем свободному менеджеру
                         await Task.Delay(timeM).ContinueWith((s) =>
                                 workerForRefer = newRefer.State == (int)ReferStates.New
                                     ? _referService.GetFreeWorkers()
@@ -80,7 +84,7 @@ namespace Support.Controllers
                                         .FirstOrDefault()
                                     : null);
 
-                        //Назначаем задание директору
+                        //Если нет свободных менеджеров, то ждем их, иначе передаем свободному директору
                         if (newRefer.State == (int)ReferStates.New && workerForRefer == null)
                         {
                             await Task.Delay(timeD).ContinueWith((s) =>
@@ -91,6 +95,7 @@ namespace Support.Controllers
                         }
                     }
 
+                    //Если свободный сотрудник в итоге обнаружился, то создаем событие.
                     if (workerForRefer != null)
                     {
                         var newQueue = new Queue()
@@ -101,6 +106,7 @@ namespace Support.Controllers
                             State = (int) ReferStates.InProcess
                         };
                         _unitOfWork.Queue.Create(newQueue);
+                        newRefer.State = (int) ReferStates.InProcess;
 
                         await _unitOfWork.SaveAsync();
 
@@ -121,8 +127,10 @@ namespace Support.Controllers
         [HttpPost]
         public async Task<JsonResult> ChangeReferState(int referId, int state, int queueId)
         {
+            //Если нет запрос не на завершение или отмену обращения, то возврашаем неудачное завершение.
             if(queueId != (int)ReferStates.Done && queueId != (int)ReferStates.Canceled)
-            { Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return Json(new { success = false, message = "Некорректный статус." }, JsonRequestBehavior.AllowGet);
             }
 
@@ -143,6 +151,20 @@ namespace Support.Controllers
                 refer.State = (int)ReferStates.Canceled;
                 stateText = ReferStates.Canceled.GetDescription();
 
+                //После отмены/завершения назначаем освободившемуся сотруднику новое обращение, если такое есть.
+                var newRefer = _unitOfWork.Refers.Filter(x=>x.State == (int)ReferStates.New).OrderBy(x => x.Date).FirstOrDefault();
+                if (newRefer != null)
+                {
+                    var newQueue = new Queue()
+                    {
+                        WorkerId = queue.WorkerId,
+                        ReferId = newRefer.Id,
+                        DateFrom = DateTime.Now,
+                        State = (int)ReferStates.InProcess
+                    };
+                    _unitOfWork.Queue.Create(newQueue);
+                }
+
                 await _unitOfWork.SaveAsync();
                 return Json(new { success = true, message = $"Статус запроса изменен на \"{stateText}\"." }, JsonRequestBehavior.AllowGet);           
             }
@@ -157,6 +179,7 @@ namespace Support.Controllers
         [HttpPost]
         public async Task<JsonResult> TransferRefer(int referId, int queueId, int workerId)
         {
+            //Если запрос не на передачу обращения другому сотруднику, то возврашаем неудачное завершение.
             if (queueId != (int)ReferStates.Transferred)
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
@@ -178,6 +201,20 @@ namespace Support.Controllers
                     State = (int)ReferStates.InProcess
                 };
                 _unitOfWork.Queue.Create(newQueue);
+
+                //После передачи назначаем освободившемуся сотруднику новое обращение, если такое есть.
+                var newRefer = _unitOfWork.Refers.Filter(x => x.State == (int)ReferStates.New).OrderBy(x => x.Date).FirstOrDefault();
+                if (newRefer != null)
+                {
+                    var newQueueForCurWorker = new Queue()
+                    {
+                        WorkerId = queue.WorkerId,
+                        ReferId = newRefer.Id,
+                        DateFrom = DateTime.Now,
+                        State = (int)ReferStates.InProcess
+                    };
+                    _unitOfWork.Queue.Create(newQueueForCurWorker);
+                }
 
                 await _unitOfWork.SaveAsync();
                 return Json(new { success = true, message = $"Запрос передан сотруднику \"{worker.Name}\"." }, JsonRequestBehavior.AllowGet);

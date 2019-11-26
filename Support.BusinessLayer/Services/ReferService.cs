@@ -20,6 +20,10 @@ namespace Support.BusinessLayer.Services
             _unitOfWork = unitOfWork;
         }
 
+        /// <summary>
+        /// Получение свободных сотрудников
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<Worker> GetFreeWorkers()
         {
              var bisyWorkersId = _unitOfWork.Queue.Filter(x => x.State == (int) ReferStates.InProcess)
