@@ -12,6 +12,17 @@
             showAlertMessage("#errorAlert", data.message);
         }
     }
+
+    function OnSuccessCreateEditWorker(data) {
+        $('#createEditWorkerForm').closest('.modal').modal('toggle');
+        showAlertMessage($('#successAlert'), data.message);
+    }
+    function OnFailureCreateEditBook(data) {
+        if ($("#createEditWorkerForm").find("#errorAlertFixed").length == 0) {
+            $("#createEditWorkerForm").prepend($("#errorAlertFixed").clone());
+        }
+        DisplayAlertErrors("createEditWorkerForm", JSON.parse(data.responseText).errors, $("#createEditWorkerForm").find("#errorAlertFixed"));
+    }
     function onFailureFormDefault(data) {
         showAlertMessage("errorAlert", data.message);
     }

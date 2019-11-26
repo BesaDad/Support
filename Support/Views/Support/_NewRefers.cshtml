@@ -24,26 +24,26 @@
     </tr>
 
 @foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.ClientName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ReferText)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Email)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Phone)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Date)
-        </td>
-        <td>
-            @Ajax.ActionLink("Отменить заявку", "CancelRefer", "Support", new { referId = item.Id }, new AjaxOptions { HttpMethod = "POST",  OnSuccess = "onSuccessCancelRefer", OnFailure = "onFailureFormDefault" })
-        </td>
-    </tr>
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.ClientName)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.ReferText)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Email)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Phone)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Date)
+    </td>
+    <td>
+        @Ajax.ActionLink("Отменить заявку", "CancelRefer", "Support", new { referId = item.Id }, new AjaxOptions { HttpMethod = "POST", OnSuccess = "onSuccessCancelRefer", OnFailure = "onFailureFormDefault" })
+    </td>
+</tr>
 }
 
 </table>

@@ -18,12 +18,14 @@
 
 @foreach (var item in Model) {
     <tr>
+        @Html.HiddenFor(modelItem=>item.Id)
         <td>
             @Html.DisplayFor(modelItem => item.Name)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.TypeDescription)
         </td>
+        <td><a data-toggle="modal" data-target="#dialogModalLg" href="@Url.Action("CreateEditWorker", "Support", new {id = item.Id})">Править</a></td>
     </tr>
 }
 

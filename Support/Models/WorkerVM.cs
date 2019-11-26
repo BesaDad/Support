@@ -16,8 +16,10 @@ namespace Support.Models
         [Display(Name="Имя сотрудника")]
         public string Name { get; set; }
 
-        
         public int Type { get; set; }
+
+        [Display(Name = "Тип")]
+        public WorkerTypes WorkerType { get; set; }
 
         [Display(Name = "Должность")]
         public string TypeDescription => ((WorkerTypes) Type).GetDescription();

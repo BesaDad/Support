@@ -200,7 +200,7 @@ namespace Support.Controllers
                 if (queueOnCancel != null)
                     queueOnCancel.State = (int)ReferStates.Canceled;
 
-                var refer = _unitOfWork.Refers.Filter(x => x.Id == referId).FirstOrDefault();
+                var refer = _unitOfWork.Refers.FindById(referId);
                 if (refer != null)
                     refer.State = (int) ReferStates.Canceled;
                 await _unitOfWork.SaveAsync();
@@ -290,6 +290,44 @@ namespace Support.Controllers
 
             return PartialView("_Workers", workersVM);
         }
+
+        [HttpGet]
+        public ActionResult CreateEditWorker(int id = 0)
+        {
+            WorkerVM model = new WorkerVM();
+            var worker = _unitOfWork.Workers.FindById(id);
+            if (id > 0)
+            {
+                model.Id = worker.Id;
+                model.Name = worker.Name;
+                model.Type = worker.Type;
+                model.WorkerType = (WorkerTypes) worker.Type;
+            }
+
+            return PartialView("_CreateEditWorker", model);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> CreateEditWorker(WorkerVM worker)
+        {
+            try
+            { 
+                var curWorker = _unitOfWork.Workers.FindById(worker.Id);
+                curWorker.Name = worker.Name;
+                curWorker.Type = (int)worker.WorkerType;
+
+                await _unitOfWork.SaveAsync();
+
+                return Json(new {success = true, message = "Данные сотрудника изменены."}, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int) HttpStatusCode.BadRequest;
+                ModelState.AddModelError("", $"Произошла ошибка, обратитесь за помощью к администратору. {ex.Message}");
+                return Json(new { success = false, errors = ModelState.Errors()}, JsonRequestBehavior.AllowGet);
+            }
+        }
+
 
         [HttpGet]
         public ActionResult Statistic()

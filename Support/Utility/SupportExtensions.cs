@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Web;
+using System.Web.Mvc;
 using Support.Domain.Models;
 
 namespace Support.Utility
@@ -13,15 +14,23 @@ namespace Support.Utility
         {
             Type genericEnumType = enymType.GetType();
             MemberInfo[] memberInfo = genericEnumType.GetMember(enymType.ToString());
-            if ((memberInfo != null && memberInfo.Length > 0))
+            if ((memberInfo.Length > 0))
             {
-                var _Attribs = memberInfo[0].GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false);
-                if ((_Attribs != null && _Attribs.Count() > 0))
+                var attribs = memberInfo[0].GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false);
+                if ((attribs.Any()))
                 {
-                    return ((System.ComponentModel.DescriptionAttribute)_Attribs.ElementAt(0)).Description;
+                    return ((System.ComponentModel.DescriptionAttribute)attribs.ElementAt(0)).Description;
                 }
             }
             return enymType.ToString();
+        }
+
+        public static SelectList ToSelectList<TEnum>(this TEnum enumObj)
+            where TEnum : struct, IComparable, IFormattable, IConvertible
+        {
+            var values = from TEnum e in Enum.GetValues(typeof(TEnum))
+                select new { Id = e, Name = e.ToString() };
+            return new SelectList(values, "Id", "Name", enumObj);
         }
 
     }
