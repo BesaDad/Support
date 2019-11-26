@@ -303,7 +303,6 @@
     <Content Include="Views\Support\_NewRefers.cshtml" />
     <Content Include="Views\Support\_DoneRefers.cshtml" />
     <Content Include="Views\Support\_CreateEditWorker.cshtml" />
-    <Content Include="Комментарии.pdf" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
