@@ -32,7 +32,7 @@ namespace Support.Domain.Models
         public string Email { get; set; }
 
         [Column("phone")]
-        public int Phone { get; set; }
+        public string Phone { get; set; }
 
         public virtual ICollection<Queue> Queue { get; set; }
     }
