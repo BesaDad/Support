@@ -348,20 +348,32 @@ namespace Support.Controllers
         public async Task<JsonResult> CreateEditWorker(WorkerVM worker)
         {
             try
-            { 
-                var curWorker = _unitOfWork.Workers.FindById(worker.Id);
-                curWorker.Name = worker.Name;
-                curWorker.Type = (int)worker.WorkerType;
+            {
+                if (worker.Id > 0)
+                {
+                    var curWorker = _unitOfWork.Workers.FindById(worker.Id);
+                    curWorker.Name = worker.Name;
+                    curWorker.Type = (int)worker.WorkerType;
+                }
+                else
+                {
+                    var newWroker = new Worker()
+                    {
+                        Name = worker.Name,
+                        Type = (int)worker.WorkerType
+                    };
+                    _unitOfWork.Workers.Create(newWroker);
+                }
 
                 await _unitOfWork.SaveAsync();
 
-                return Json(new {success = true, message = "Данные сотрудника изменены."}, JsonRequestBehavior.AllowGet);
+                return Json(new { success = true, message = "Данные сотрудника изменены." }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                Response.StatusCode = (int) HttpStatusCode.BadRequest;
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 ModelState.AddModelError("", $"Произошла ошибка, обратитесь за помощью к администратору. {ex.Message}");
-                return Json(new { success = false, errors = ModelState.Errors()}, JsonRequestBehavior.AllowGet);
+                return Json(new { success = false, errors = ModelState.Errors() }, JsonRequestBehavior.AllowGet);
             }
         }
 
