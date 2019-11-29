@@ -112,7 +112,7 @@ namespace Support.Controllers
 
                         return Json(new {success = true, message = "Запрос создан и передан в обработку."}, JsonRequestBehavior.AllowGet);
                     }
-                    return Json(new { success = false, message = "Запрос создан и ожидает передачи в обработку." }, JsonRequestBehavior.AllowGet);
+                    return Json(new { success = true, message = "Запрос создан и ожидает передачи в обработку." }, JsonRequestBehavior.AllowGet);
                 }
                 return Json(new { success = false, message = "Запрос не был создан, обратитесь за помощью к администратору" }, JsonRequestBehavior.AllowGet);
             }
@@ -257,7 +257,7 @@ namespace Support.Controllers
         [HttpGet]
         public ActionResult NewRefers()
         {
-            var newRefers = _unitOfWork.Refers.Filter(x => x.State == (int) ReferStates.New)?.ToList();
+            var newRefers = _unitOfWork.Refers.Filter(x => x.State == (int) ReferStates.New)?.OrderBy(x=>x.Date).ToList();
             var newRefersVM = new List<ReferVM>();
             if (newRefers.Any())
             {
