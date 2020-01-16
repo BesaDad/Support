@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.Migrations;
-using System.Linq;
-using System.Web;
-using Support.BusinessLayer;
+﻿using System.Data.Entity.Migrations;
+using Support.Domain;
 
-namespace Support.App_Start
+namespace Support
 {
     public sealed class Configuration : DbMigrationsConfiguration<SupportContext>
     {

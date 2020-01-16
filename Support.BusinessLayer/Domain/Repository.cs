@@ -1,4 +1,5 @@
 ﻿using Support.Infrastructure.Domain;
+using Support.Domain;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;

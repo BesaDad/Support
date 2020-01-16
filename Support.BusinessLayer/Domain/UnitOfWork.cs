@@ -1,7 +1,8 @@
 ﻿using Support.Domain.Models;
-using Support.Infrastructure.Domain;
+using Support.Domain;
 using System.Data.Entity;
 using System.Threading.Tasks;
+using Support.Infrastructure.Domain;
 
 namespace Support.BusinessLayer.Domain
 {
