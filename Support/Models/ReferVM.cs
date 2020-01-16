@@ -20,7 +20,7 @@ namespace Support.Models
         public string Email { get; set; }
 
         [Display(Name = "Телефон")]
-        public int Phone { get; set; }
+        public string Phone { get; set; }
 
         [Display(Name = "Статус обращения")]
         public int State { get; set; }
