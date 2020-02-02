@@ -276,7 +276,7 @@ namespace Support.Controllers
                 }
             }
 
-            return PartialView("_NewRefers", newRefersVM ?? new List<ReferVM>());
+            return PartialView("_NewRefers");
         }
 
         [HttpGet]
@@ -304,7 +304,7 @@ namespace Support.Controllers
                 }
             }
             
-            return PartialView("_DoneRefers", doneRefers ?? new List<ReferDone>());
+            return PartialView("_DoneRefers");
         }
 
         [HttpGet]
